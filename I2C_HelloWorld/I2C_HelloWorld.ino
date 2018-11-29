@@ -1,5 +1,5 @@
 #include <Wire.h>
-struct motors {
+struct motorControl {
   byte right_front_speed;
   byte right_front_dir;
   byte right_middle_speed;
@@ -15,12 +15,46 @@ struct motors {
   byte left_rear_dir;
 };
 
-//init a struct for the bytes of the motor
-struct motors motorCommands = {0,0,0,0,0,0,0,0,0,0,0,0};
+//this struct is used to communicate back to the jetson
+//the actual state of the motors
+//for each wheel we will send, its actual speed, 
+//amps, and any error state
+struct motorFeedback {
+  byte right_front_speed;
+  byte right_front_amps;
+  byte right_front_error;
+  
+  byte right_middle_speed;
+  byte right_middle_amps;
+  byte right_middle_error;
+  
+  byte right_rear_speed;
+  byte right_rear_amps;
+  byte right_rear_error;
+
+  byte left_front_speed;
+  byte left_front_amps;
+  byte left_front_error;
+
+  byte left_middle_speed;
+  byte left_middle_amps;
+  byte left_middle_error;
+
+  byte left_rear_speed;
+  byte left_rear_amps;
+  byte left_rear_error;
+};
+
+//init a struct for the bytes to control the motor
+struct motorControl motorCommands = {0,0,0,0,0,0,0,0,0,0,0,0};
+
+//struct to contain feedback of motor
+struct motorFeedback feedback = {97,98,99,100,101,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 void setup() {
   Wire.begin(8);                // join i2c bus with address #8
   Wire.onReceive(receiveEvent); // register event
+  Wire.onRequest(requestEvent);
   Serial.begin(9600);           // start serial for output
 }
 
@@ -53,6 +87,34 @@ void loop() {
   Serial.print(' ');
   Serial.print(motorCommands.left_rear_dir);
   Serial.print('\n');
+}
+
+//function that is called when the jetson reads bytes
+//here is where we will send it the feedback
+void requestEvent() {
+  Wire.write(feedback.right_front_speed);
+  Wire.write(feedback.right_front_amps);
+  Wire.write(feedback.right_front_error);
+
+  Wire.write(feedback.right_middle_speed);
+  Wire.write(feedback.right_middle_amps);
+  Wire.write(feedback.right_middle_error);
+
+  Wire.write(feedback.right_rear_speed);
+  Wire.write(feedback.right_rear_amps);
+  Wire.write(feedback.right_rear_error);
+
+  Wire.write(feedback.left_front_speed);
+  Wire.write(feedback.left_front_amps);
+  Wire.write(feedback.left_front_error);
+
+  Wire.write(feedback.left_middle_speed);
+  Wire.write(feedback.left_middle_amps);
+  Wire.write(feedback.left_middle_error);
+
+  Wire.write(feedback.left_rear_speed);
+  Wire.write(feedback.left_rear_amps);
+  Wire.write(feedback.left_rear_error);
 }
 
 void receiveEvent(int howMany) {
