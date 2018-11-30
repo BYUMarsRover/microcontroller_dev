@@ -1,18 +1,19 @@
-#ifndef WHEEL_MOTOR
-#define WHEEL_MOTOR
+#ifndef WHEEL_H
+#define WHEEL_H
 #include <Arduino.h>
 using namespace std;
 
-class WheelMotor {
+class Wheel {
 public:
-  WheelMotor(const int PWM_PIN, const int DIRECTION_PIN, const int ENABLE_PIN) {
+  Wheel(){}
+  Wheel(const int PWM_PIN, const int DIRECTION_PIN, const int ENABLE_PIN) {
     this->PWM_PIN = PWM_PIN;
     this->DIRECTION_PIN = DIRECTION_PIN;
     this->ENABLE_PIN = ENABLE_PIN;
   }
-  ~WheelMotor(){}
+  ~Wheel(){}
   void setSpeed_() {
-    analogWrite(
+    
   }
   void setDirection() {
     
@@ -23,7 +24,7 @@ private:
   int ENABLE_PIN;
   byte speed_;
   byte direction_;
-  byte enable
+  byte enable;
 };
 
 #endif 
