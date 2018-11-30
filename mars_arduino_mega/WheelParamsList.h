@@ -18,8 +18,8 @@ public:
     parameters[size_] = newParams;
     size_++;
   }
-  char* toString() {
-    return "hello world";
+  WheelParams at(const int index) {
+    return parameters[index];
   }
 private:
   int capacity;

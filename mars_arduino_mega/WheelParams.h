@@ -11,7 +11,10 @@ public:
     this->speed_ = speed_;
     this->direction_ = direction_; 
   }
-private:
+  void printMe() {
+    Serial.println(speed_);
+    Serial.println(direction_);
+  }
   byte speed_;
   byte direction_;
 };

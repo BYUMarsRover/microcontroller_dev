@@ -12,11 +12,21 @@ public:
     this->ENABLE_PIN = ENABLE_PIN;
   }
   ~Wheel(){}
-  void setSpeed_() {
-    
+  void pushWheelParams(WheelParams wheelParams) {
+    this->speed_ = wheelParams.speed_;
+    Serial.println("pushed a speed of: " + speed_);
+    this->direction_ = wheelParams.direction_;
+    Serial.println("pushed a direction of: " + direction_);
+    writeParams();
   }
-  void setDirection() {
-    
+  void writeParams() {
+    if (speed_ < 120) {
+      //
+    } else if (speed_ > 134) {
+      
+    } else {
+      
+    }
   }
 private:
   int PWM_PIN;
