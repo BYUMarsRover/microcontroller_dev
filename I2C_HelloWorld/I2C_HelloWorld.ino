@@ -1,4 +1,20 @@
+/*
+ * @Author: Tucker Wilkes
+ * @Description: The purpose of this program is to demonstrate
+ * various I2C functions. 
+ * 
+ * The motorControl structure is where the bytes sent from the Jetson
+ * get parsed into - this will allow us to easily set the speed and dir
+ * of each individual wheel.
+ * 
+ * The structure motorFeedback is for the puspose of reading feedback
+ * from the motor drivers. Currently we have it set up to read
+ * speed, amps, and one byte available for any needed error messages
+*/
 #include <Wire.h>
+
+#define I2C_ADDRESS 8//the address used to register on the I2C bus
+
 struct motorControl {
   byte right_front_speed;
   byte right_front_dir;
@@ -52,12 +68,14 @@ struct motorControl motorCommands = {0,0,0,0,0,0,0,0,0,0,0,0};
 struct motorFeedback feedback = {97,98,99,100,101,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 void setup() {
-  Wire.begin(8);                // join i2c bus with address #8
-  Wire.onReceive(receiveEvent); // register event
-  Wire.onRequest(requestEvent);
+  Wire.begin(I2C_ADDRESS);                // join i2c bus with address #8
+  Wire.onReceive(receiveEvent); // register the receive event
+  Wire.onRequest(requestEvent);//register the request event
   Serial.begin(9600);           // start serial for output
 }
 
+//This function runs continuously
+//In here we print out the state of the motor
 void loop() {
   delay(1000);
   //print status of right motors
@@ -117,16 +135,21 @@ void requestEvent() {
   Wire.write(feedback.left_rear_error);
 }
 
+//this function is called when we receive bytes from the i2c bus
 void receiveEvent(int howMany) {
   //the python i2c library has a preammble byte that we can set
-  //as of the time of this writing it is set to 0
+  //as of the time of this writing we are using the preamble to 
+  //define what we are going to control
+  //0x1 - drive wheels
+  //0x2 - arm
+  //0x3 - science
   
   for (int index = 0; Wire.available(); index++) {//if we have a message   
-    byte c = Wire.read(); // receive byte as a character    
-    //Serial.print(c);    
-    //Serial.print(' ');
+    byte c = Wire.read(); // receive byte as a character        
 
-    switch (index) {//switch which byte we are extracting
+    //consume a byte and place it into the appropiate 
+    //data field in the motor control struct
+    switch (index) {
       case 1:
         motorCommands.right_front_speed = c;
       break;
@@ -176,5 +199,4 @@ void receiveEvent(int howMany) {
       break;
     }
   } 
-  //Serial.print('\n');
 }
