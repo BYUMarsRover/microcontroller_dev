@@ -31,9 +31,16 @@ void jetsonSentBytes() {
 WheelParamsList readWheelParamList() {
   WheelParamsList result(NUM_WHEELS);
   for (int i = 0; i < NUM_WHEELS; i++) {
+    if (!Wire.available()) errorOccurred("not enough bytes sent!");
     result.append(WheelParams(Wire.read(), Wire.read()));
   }
   return result;
+}
+
+void errorOccurred(char* errorMessage) {
+  Serial.println(errorMessage);
+  delay(500);
+  exit(1);
 }
 
 void jetsonRequestedBytes() {

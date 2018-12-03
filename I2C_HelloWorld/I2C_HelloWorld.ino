@@ -145,7 +145,7 @@ void receiveEvent(int howMany) {
   //0x3 - science
   
   for (int index = 0; Wire.available(); index++) {//if we have a message   
-    byte c = Wire.read(); // receive byte as a character        
+    byte c = Wire.read(); // receive byte as a character      
 
     //consume a byte and place it into the appropiate 
     //data field in the motor control struct
