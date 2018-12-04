@@ -17,11 +17,10 @@ void setup() {
 void loop() {
 }
 
-void receiveHandler() {
+void receiveHandler(int byteCount) {
   switch(Wire.read()) {
   case 1: setWheelParams(); break;
   case 2: setArmParams(); break;
-  case 8: flushWire(); break;
   default: Serial.println("default called" + Wire.read()); flushWire(); break;
   }
 }

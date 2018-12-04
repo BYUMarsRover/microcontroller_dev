@@ -2,7 +2,7 @@
 
 byte T = 0;
 void setup() {
-  Wire.begin(8);
+  Wire.begin(9);
   Serial.begin(9600);
   Wire.onReceive(onReceive_);
   Wire.onRequest(onRequest_);
@@ -10,19 +10,19 @@ void setup() {
 }
 
 void onReceive_() {
-  Serial.println("\nReceive\n");
+//  Serial.println("\nReceive\n");
   while(Wire.available()) {
     Serial.println(Wire.read());
   }
-  Serial.println("\nend of transmission\n");
+  Serial.println("\n");
 }
 
 void onRequest_() {
-  Serial.println("\nRequest\n");
-  while(Wire.available()) {
+//  Serial.println("\nRequest\n");
+  /*while(Wire.available()) {
     Serial.println(Wire.read());
-  }
-  Serial.println("\nend of transmission\n");
+  }*/
+//  Serial.println("\nend of transmission\n");
   Wire.write(T);
   Wire.write(T);
   Wire.write(T);

@@ -77,7 +77,7 @@ void setup() {
 //This function runs continuously
 //In here we print out the state of the motor
 void loop() {
-  delay(1000);
+  delay(500);
   //print status of right motors
   Serial.print(motorCommands.right_front_speed);
   Serial.print(' ');
@@ -150,6 +150,10 @@ void receiveEvent(int howMany) {
     //consume a byte and place it into the appropiate 
     //data field in the motor control struct
     switch (index) {
+      case 0:
+        motorCommands.left_rear_speed = c;
+      break;
+      
       case 1:
         motorCommands.right_front_speed = c;
       break;
