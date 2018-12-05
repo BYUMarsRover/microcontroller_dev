@@ -71,6 +71,7 @@ public:
     analogWrite(LEFT_REAR_WHEEL_SPEED, left_rear_speed);
     digitalWrite(LEFT_REAR_WHEEL_DIR, left_rear_dir);
     digitalWrite(LEFT_REAR_WHEEL_ENABLE, left_rear_enable);
+    Serial.println(this->toString());
   }
 
   char* toString() {

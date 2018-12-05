@@ -21,6 +21,7 @@ void receiveHandler(int byteCount) {
   switch(Wire.read()) {
   case 1: setWheelParams(); break;
   case 2: setArmParams(); break;
+  case I2C_ADDRESS: Serial.println("address read"); Wire.read(); break;
   default: Serial.println("default called" + Wire.read()); flushWire(); break;
   }
 }

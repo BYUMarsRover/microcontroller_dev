@@ -1,7 +1,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#define I2C_ADDRESS 8
+#define I2C_ADDRESS 127
 #define NUM_WHEELS 6
 
 #define LEFT_FRONT_WHEEL 0

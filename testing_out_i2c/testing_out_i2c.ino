@@ -11,6 +11,10 @@ void setup() {
 
 void onReceive_() {
 //  Serial.println("\nReceive\n");
+  if (Wire.available() ==1) {
+    Wire.read();
+    return;
+  }
   while(Wire.available()) {
     Serial.println(Wire.read());
   }
