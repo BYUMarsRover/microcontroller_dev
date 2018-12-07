@@ -1,6 +1,12 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+/*
+ * DO NOT USE PINS A4 or A5 as it will kill the I2C coms!!!!!
+ * running theory is that internally they are connected in the microcontroller to the I2C bus pins for the atmega 2560 MCC
+ * 12/7/18
+ */
+
 #define I2C_ADDRESS 8
 #define NUM_WHEELS 6
 
@@ -29,7 +35,7 @@
 #define RIGHT_FRONT_WHEEL_SET_SPEED 7
 #define RIGHT_FRONT_WHEEL_DIR 40
 #define RIGHT_FRONT_WHEEL_ENABLE 44
-#define RIGHT_FRONT_WHEEL_ACTUAL_SPEED A4
+#define RIGHT_FRONT_WHEEL_ACTUAL_SPEED A7
 #define RIGHT_FRONT_WHEEL_AMPS A6
 
 #define RIGHT_MIDDLE_WHEEL 4
