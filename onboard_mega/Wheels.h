@@ -10,7 +10,7 @@ class Wheels {
 public:
 
   Wheels(){  
-    right_front_set_speed = 0;
+    right_front_set_speed = 125;
     right_front_dir = true;
     right_front_enable = true;
     right_front_actual_speed = 0;
@@ -31,7 +31,7 @@ public:
     right_rear_amps = 0;
     right_rear_error = false;
   
-    left_front_set_speed = 0;
+    left_front_set_speed = 125;
     left_front_dir = true;
     left_front_enable = true;
     left_front_actual_speed = 0;

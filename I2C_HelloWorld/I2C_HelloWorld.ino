@@ -13,7 +13,7 @@
 */
 #include <Wire.h>
 
-#define I2C_ADDRESS 8//the address used to register on the I2C bus
+#define I2C_ADDRESS 10//the address used to register on the I2C bus
 
 struct motorControl {
   byte right_front_speed;

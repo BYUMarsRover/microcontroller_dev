@@ -5,8 +5,7 @@
 using namespace std;
 
 Wheels wheels;
-byte T = 0;
-bool writeWheelParams = false;
+bool writeWheelParams = true;
 
 void setup() {
   Wire.begin(I2C_ADDRESS);
@@ -22,6 +21,12 @@ void loop() {
     wheels.writeParams();
     writeWheelParams = false;
   }
+  clearErrorStates();
+  delay(10);
+}
+
+void clearErrorStates() {
+  //todo!!
 }
 
 void writeWheelFeedback() {
