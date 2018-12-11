@@ -6,29 +6,38 @@
 class Wheel {
 public:
 
-  Wheel(){}
+  Wheel() {
+    this->set_speed_pin = 0;
+    this->enable_pin = 0;
+    this->dir_pin = 0;
+    this->actual_speed_pin = 0;
+    this->error_pin = 0;
+    
+    this->set_speed = 200;
+    this->actual_speed = 0;
+    this->dir = true;
+    this->error = false;
+  }
   
-  Wheel(uint8_t set_speed_pin, uint8_t enable_pin, uint8_t dir_pin, uint8_t actual_speed_pin, uint8_t error_pin){
+  void init(uint8_t set_speed_pin, uint8_t enable_pin, uint8_t dir_pin, uint8_t actual_speed_pin, uint8_t error_pin){
     this->set_speed_pin = set_speed_pin;
     this->enable_pin = enable_pin;
     this->dir_pin = dir_pin;
     this->actual_speed_pin = actual_speed_pin;
     this->error_pin = error_pin;
     
-    this->set_speed = 0;
-    this->actual_speed = 0;
-    this->dir = true;
-    this->error = false;
-    
     digitalWrite(enable_pin, true);
-    writeParams();
   }
   
   ~Wheel(){}
   
   void updateFeedbackData() {
     this->actual_speed = convertToRpm(analogRead(actual_speed_pin));
-    this->error = digitalRead(error_pin);
+    if (digitalRead(this->error_pin) == HIGH) {
+      this->error = true;
+    } else {
+      this->error = false;
+    }
   }
 
   double convertToRpm(double rawSpeed) {
@@ -38,7 +47,7 @@ public:
   }
 
   void writeParams() {
-    analogWrite(set_speed_pin, set_speed);
+    analogWrite(set_speed_pin, map(set_speed,0,255,(255*.1),(255*.9)));
     digitalWrite(dir_pin, dir);
   }
 
