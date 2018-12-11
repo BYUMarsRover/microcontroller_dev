@@ -5546,7 +5546,7 @@
 						<dataTypeIDRef uniqueIDRef="SDigitalIOConfiguration"/>
 						<access>readWrite</access>
 						<defaultValue>0x00004444</defaultValue>
-						<actualValue>0x00005444</actualValue>
+						<actualValue>0x00005644</actualValue>
 					</parameter>
 					<parameter uniqueID="PARAM_DigitalInputsConfiguration" persistent="true" variableName="IOH_ndDigInputsConfiguration" callbackName="IOH_SetDigitalInputConfig" callbackType="single">
 						<index>0x4121</index>
