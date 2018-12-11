@@ -1,10 +1,12 @@
-
+char PIN = A4;
+#define PIN_ A4
 
 void setup() {
-  pinMode("A4", OUTPUT);
+  pinMode(PIN_, INPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  Serial.println(digitalRead(PIN));
+  delay(250);
 }

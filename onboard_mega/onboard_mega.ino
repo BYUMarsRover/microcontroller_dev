@@ -21,7 +21,7 @@ void loop() {
     wheels.writeParams();
     writeWheelParams = false;
   }
-  writeWheelParams = wheels.clearErrorStates();
+  wheels.clearErrorStates();
   delay(125);
 }
 
