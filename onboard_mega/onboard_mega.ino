@@ -22,14 +22,13 @@ void loop() {
   }
   checkClearErrorStates();
   wheels.updateFeedbackData();
-  delay(10);
 }
 
 void checkClearErrorStates() {
   for (int i = 0; i < NUM_WHEELS; i++) {
     if (wheels.wheelList[i].error) {
       digitalWrite(wheels.wheelList[i].enable_pin, false);
-      delay(100);
+      delay(10);
       digitalWrite(wheels.wheelList[i].enable_pin, true);
     }
   }
