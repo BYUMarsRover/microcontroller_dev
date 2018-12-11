@@ -13,13 +13,6 @@ void setup() {
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
   Serial.begin(9600);
-//  analogWrite(RIGHT_FRONT_WHEEL_SET_SPEED, 200);
-//  analogWrite(LEFT_FRONT_WHEEL_SET_SPEED, 200);
-//  digitalWrite(RIGHT_FRONT_WHEEL_DIR, true);
-//  digitalWrite(LEFT_FRONT_WHEEL_DIR, true);
-//  digitalWrite(RIGHT_FRONT_WHEEL_ENABLE, true);
-//  digitalWrite(LEFT_FRONT_WHEEL_ENABLE, true);
-  
 }
 
 void loop() {
