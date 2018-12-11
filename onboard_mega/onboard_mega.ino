@@ -12,26 +12,31 @@ void setup() {
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-  wheels.writeParams();
   Serial.begin(9600);
+//  analogWrite(RIGHT_FRONT_WHEEL_SET_SPEED, 200);
+//  analogWrite(LEFT_FRONT_WHEEL_SET_SPEED, 200);
+//  digitalWrite(RIGHT_FRONT_WHEEL_DIR, true);
+//  digitalWrite(LEFT_FRONT_WHEEL_DIR, true);
+//  digitalWrite(RIGHT_FRONT_WHEEL_ENABLE, true);
+//  digitalWrite(LEFT_FRONT_WHEEL_ENABLE, true);
+  
 }
 
 void loop() {
-  wheels.updateFeedbackData();
-  Serial.println(digitalRead(RIGHT_FRONT_WHEEL_ERROR), DEC);
   if (writeWheelParams) {
     wheels.writeParams();
     writeWheelParams = false;
   }
-//  checkClearErrorStates();
-  delay(50);
+  checkClearErrorStates();
+  wheels.updateFeedbackData();
+  delay(10);
 }
 
 void checkClearErrorStates() {
   for (int i = 0; i < NUM_WHEELS; i++) {
     if (wheels.wheelList[i].error) {
       digitalWrite(wheels.wheelList[i].enable_pin, false);
-      delay(75);
+      delay(100);
       digitalWrite(wheels.wheelList[i].enable_pin, true);
     }
   }
@@ -86,29 +91,29 @@ void setPinModes() {
   pinMode(RIGHT_MIDDLE_WHEEL_DIR, OUTPUT);
   pinMode(RIGHT_MIDDLE_WHEEL_ENABLE, OUTPUT);
   pinMode(RIGHT_MIDDLE_WHEEL_ACTUAL_SPEED, INPUT);
-  pinMode(RIGHT_MIDDLE_WHEEL_ERROR, INPUT);
+  pinMode(RIGHT_MIDDLE_WHEEL_ERROR, INPUT_PULLUP);
   
   pinMode(RIGHT_REAR_WHEEL_SET_SPEED, OUTPUT);
   pinMode(RIGHT_REAR_WHEEL_DIR, OUTPUT);
   pinMode(RIGHT_REAR_WHEEL_ENABLE, OUTPUT);
   pinMode(RIGHT_REAR_WHEEL_ACTUAL_SPEED, INPUT);
-  pinMode(RIGHT_REAR_WHEEL_ERROR, INPUT);
+  pinMode(RIGHT_REAR_WHEEL_ERROR, INPUT_PULLUP);
   
   pinMode(LEFT_FRONT_WHEEL_SET_SPEED, OUTPUT);
   pinMode(LEFT_FRONT_WHEEL_DIR, OUTPUT);
   pinMode(LEFT_FRONT_WHEEL_ENABLE, OUTPUT);
   pinMode(LEFT_FRONT_WHEEL_ACTUAL_SPEED, INPUT);
-  pinMode(LEFT_FRONT_WHEEL_ERROR, INPUT);
+  pinMode(LEFT_FRONT_WHEEL_ERROR, INPUT_PULLUP);
   
   pinMode(LEFT_MIDDLE_WHEEL_SET_SPEED, OUTPUT);
   pinMode(LEFT_MIDDLE_WHEEL_DIR, OUTPUT);
   pinMode(LEFT_MIDDLE_WHEEL_ENABLE, OUTPUT);
   pinMode(LEFT_MIDDLE_WHEEL_ACTUAL_SPEED, INPUT);
-  pinMode(LEFT_MIDDLE_WHEEL_ERROR, INPUT);
+  pinMode(LEFT_MIDDLE_WHEEL_ERROR, INPUT_PULLUP);
   
   pinMode(LEFT_REAR_WHEEL_SET_SPEED, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_DIR, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_ENABLE, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_ACTUAL_SPEED, INPUT);
-  pinMode(LEFT_REAR_WHEEL_ERROR, INPUT);
+  pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);
 }

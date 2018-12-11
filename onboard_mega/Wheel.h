@@ -13,7 +13,7 @@ public:
     this->actual_speed_pin = 0;
     this->error_pin = 0;
     
-    this->set_speed = 200;
+    this->set_speed = 0;
     this->actual_speed = 0;
     this->dir = true;
     this->error = false;
