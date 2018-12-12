@@ -50,6 +50,7 @@ void flushWire() {
 
 void requestHandler() {
   for (int i = 0; i < NUM_WHEELS; i++) {
+//    Wire.write((uint8_t*)&wheels.wheelList[i].actual_speed, 2);
     Wire.write(wheels.wheelList[i].actual_speed);
     Wire.write(wheels.wheelList[i].error);
   }

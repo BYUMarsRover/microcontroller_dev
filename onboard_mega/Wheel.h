@@ -35,15 +35,12 @@ public:
   ~Wheel(){}
   
   void updateFeedbackData() {
-    this->actual_speed = convertToRpm(analogRead(actual_speed_pin));
-    if (digitalRead(this->error_pin) == HIGH) {
-      this->error = true;
-    } else {
-      this->error = false;
-    }
+//    this->actual_speed = convertToRpm(analogRead(actual_speed_pin));
+    this->actual_speed = map(analogRead(actual_speed_pin),0,1023,0,255);
+    this->error = digitalRead(this->error_pin);
   }
 
-  double convertToRpm(double rawSpeed) {
+  uint16_t convertToRpm(uint8_t rawSpeed) {
     // escon output ranges from 0-4V while MEGA input ranges from 0-5V and we want to convert a range [0,1023] to [ESCON_RPM_RANGE_MIN, ESCON_RPM_RANGE_MAX]. 818.4 is 4/5 of 1023.
     // this equation is the equation of a line on a graph representing the output range on the y axis and the input range on th x axis. y = mx + b
     return ((((ESCON_RPM_RANGE_MAX - ESCON_RPM_RANGE_MIN) / 818.4) * rawSpeed) + ESCON_RPM_RANGE_MAX); 
