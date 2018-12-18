@@ -35,9 +35,19 @@ public:
   ~Wheel(){}
   
   void updateFeedbackData() {
-//    this->actual_speed = convertToRpm(analogRead(actual_speed_pin));
-    this->actual_speed = map(analogRead(actual_speed_pin),0,1023,0,255);
+    
     this->error = digitalRead(this->error_pin);
+    /*
+     * the actual_speed is reported by the motor controller as a voltage ranging from 0-4V (representing -5400rpm to +5400rpm).
+     * the arduino receives this through analogRead() which expects a 0-5V input range. This is where the value 818.4 (1023 * (4/5) 
+     * comes from. analogRead() will report the 0-5V input as a value in the range 0-1023 (because it has a 10 bit analog-to-digital converter.
+     * But because our input will range from 0-v volts we map the input from 0 to (1023 * (4/5) = 818.4) to a new range from 
+     * -255 to 255. This adjusts for the 4V to 5V difference. In addition, we take the absolute value of this reading and report.
+     * The direction of the motor, CW or CCW, determines the polarity of the reading.
+     */
+    if (!this->error) this->actual_speed = abs((map(analogRead(actual_speed_pin),0,818.4,-255,255)));
+    else this->actual_speed = 0;
+    
   }
 
   uint16_t convertToRpm(uint8_t rawSpeed) {

@@ -1,3 +1,5 @@
+//COM 5
+
 #include <Wire.h>
 #include "Globals.h"
 #include "Wheels.h"
@@ -20,7 +22,7 @@ void loop() {
     wheels.writeParams();
     writeWheelParams = false;
   }
-  checkClearErrorStates();
+//  checkClearErrorStates();
   wheels.updateFeedbackData();
 }
 
