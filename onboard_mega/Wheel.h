@@ -57,6 +57,10 @@ public:
   }
 
   void writeParams() {
+    /*
+    * The Escon Drive Controllers require a minuimum-maximum range for the duty cycle (pwm) of 10% - 90%. So the desired speed is mapped from
+    *  a range of [0,255] to [255*.1,255*.9].
+    */
     analogWrite(set_speed_pin, map(set_speed,0,255,(255*.1),(255*.9)));
     digitalWrite(dir_pin, is_right_side_wheel == dir);
   }
