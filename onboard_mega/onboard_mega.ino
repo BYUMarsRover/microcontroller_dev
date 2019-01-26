@@ -7,7 +7,7 @@
 using namespace std;
 
 Wheels wheels;
-bool writeWheelParams = false;
+bool writeWheelParams = true;
 
 void setup() {
   setPinModes();
@@ -22,7 +22,7 @@ void loop() {
     wheels.writeParams();
     writeWheelParams = false;
   }
-  checkClearErrorStates();
+  //checkClearErrorStates();
   wheels.updateFeedbackData();
 }
 
