@@ -2,7 +2,6 @@
 
 class WheelParams {
 public:
-  byte preamble = 0x1;
   byte leftFrontSpeed = 0x0;
   byte leftFrontDir = 0x0;
   byte leftMiddleSpeed = 0x0;
@@ -18,96 +17,72 @@ public:
 };
 
 // constants won't change. They're used here to set pin numbers:
-const int LB = 2;     // the number of the pushbutton pin
-const int RB = 3;
-const int ledPin =  13;      // the number of the LED pin
+const int LB = 3;     // the number of the pushbutton pin
+const int RB = 2;
 
 // variables will change:
 int LBState = 0;         // variable for reading the pushbutton status
 int RBState = 0;
+int speed_ = 155;
+int prevLB = 0;
+int prevRB = 0;
 WheelParams wheelParams;
 
 void setup() {
-  // initialize the LED pin as an output:
-  pinMode(ledPin, OUTPUT);
-  // initialize the pushbutton pin as an input:
   pinMode(LB, INPUT);
   pinMode(RB, INPUT);
-  Wire.begin(); // join i2c bus (address optional for master)
+  Wire.begin();
+  Serial.begin(9600);
 }
 
 void loop() {
-  // read the state of the pushbutton value:
+  prevLB = LBState;
+  prevRB = RBState;
   LBState = digitalRead(LB);
   RBState = digitalRead(RB);
 
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (LBState == HIGH) {
-    setWheelsDrive('l');
-  } else {
-    setWheelsStop('l');
+  if (prevLB != LBState || prevRB != RBState) {
+  
+    if (LBState == 1) {
+      setWheelsSpeed('l', speed_);
+    } else {
+      setWheelsSpeed('l', 0);
+    }
+    if (RBState == 1) {
+      setWheelsSpeed('r', speed_);
+    } else {
+      setWheelsSpeed('r', 0);
+    }
+    writeParams();
+    
   }
-  if (RBState == HIGH) {
-    setWheelsDrive('r');
-  } else {
-    setWheelsStop('r');
-  }
-  writeParams();
   delay(10);
 }
 
-void setWheelsDrive(char side) {
+void setWheelsSpeed(const char& side, const int& speed_) {
   switch (side) {
   case 'l' :  {
-    wheelParams.leftFrontSpeed = 0x125;
+    wheelParams.leftFrontSpeed = speed_;
     wheelParams.leftFrontDir = 0x1;
-    wheelParams.leftMiddleSpeed = 0x125;
+    wheelParams.leftMiddleSpeed = speed_;
     wheelParams.leftMiddleDir = 0x1;
-    wheelParams.leftBackSpeed = 0x125;
+    wheelParams.leftBackSpeed = speed_;
     wheelParams.leftBackDir = 0x1;
-    ;break;
-  }
+  }; break;
   case 'r' : {
-    wheelParams.rightFrontSpeed = 0x125;
+    wheelParams.rightFrontSpeed = speed_;
     wheelParams.rightFrontDir = 0x1;
-    wheelParams.rightMiddleSpeed = 0x125;
+    wheelParams.rightMiddleSpeed = speed_;
     wheelParams.rightMiddleDir = 0x1;
-    wheelParams.rightBackSpeed = 0x125;
+    wheelParams.rightBackSpeed = speed_;
     wheelParams.rightBackDir = 0x1;
-    break;
-  }
-  default :;
-  }
-  
-}
-
-void setWheelsStop(char side) {
-  switch (side) {
-  case 'l' : {
-    wheelParams.leftFrontSpeed = 0x0;
-    wheelParams.leftFrontDir = 0x1;
-    wheelParams.leftMiddleSpeed = 0x0;
-    wheelParams.leftMiddleDir = 0x1;
-    wheelParams.leftBackSpeed = 0x0;
-    wheelParams.leftBackDir = 0x1;
-    break;
-  }
-  case 'r' : {
-    wheelParams.rightFrontSpeed = 0x0;
-    wheelParams.rightFrontDir = 0x1;
-    wheelParams.rightMiddleSpeed = 0x0;
-    wheelParams.rightMiddleDir = 0x1;
-    wheelParams.rightBackSpeed = 0x0;
-    wheelParams.rightBackDir = 0x1;
-    ; break;
-  }
-  default : ; 
+  }; break;
   }
 }
 
 void writeParams() {
   Wire.beginTransmission(8);
-  Wire.write(wheelParams.preamble);
+  Wire.write(1);
   Wire.write(wheelParams.leftFrontSpeed);
   Wire.write(wheelParams.leftFrontDir);
   Wire.write(wheelParams.leftMiddleSpeed);

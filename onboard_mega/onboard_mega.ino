@@ -22,7 +22,7 @@ void loop() {
     wheels.writeParams();
     writeWheelParams = false;
   }
-  //checkClearErrorStates();
+  checkClearErrorStates();
   wheels.updateFeedbackData();
 }
 
