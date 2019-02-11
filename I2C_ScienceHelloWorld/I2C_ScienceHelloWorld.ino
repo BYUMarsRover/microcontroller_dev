@@ -45,6 +45,10 @@ void setup() {
   Wire.onReceive(receiveEvent); // register the receive event
   Wire.onRequest(requestEvent);//register the request event
   Serial.begin(9600);           // start serial for output
+
+  for (int i = 0; i < i < NUM_CO2_SENSORS*2; i++) {
+    feedback.co2Bytes[i] = i;
+  }
 }
 
 //This function runs continuously
