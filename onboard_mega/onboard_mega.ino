@@ -70,8 +70,14 @@ void setWheelParams() {
   }
 }
 
+//    armCommands = bytearray([armMessage.turret_speed, armMessage.turret_dir, shoulder_low, 
+//      shoulder_high, elbow_low, elbow_high, armMessage.wrist_speed, 
+//      armMessage.wrist_dir, armMessage.hand_speed, armMessage.hand_dir]);
+
 void setArmParams() {
-  //to do
+  if (Wire.available() == 10) {
+    
+  }
 }
 
 
