@@ -7,6 +7,7 @@
 using namespace std;
 
 Wheels wheels;
+Arm arm;
 bool writeWheelParams = true;
 
 void setup() {
@@ -76,7 +77,10 @@ void setWheelParams() {
 
 void setArmParams() {
   if (Wire.available() == 10) {
-    
+    arm.turret.set_params(Wire.read(), Wire.read()); // params are speed and dir in that order
+    arm.shoulder.set_params(Wire.read(), Wire.read()); // params are pos_high_byte and pos_low_byte in that order!
+    arm.eldbow.set_params(Wire.read(), Wire.read()); // params are pos_high_byte and pos_low_byte in that order!
+    arm.wrist.set_params(Wire.read(), Wire.read()); // params are 
   }
 }
 

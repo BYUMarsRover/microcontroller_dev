@@ -12,7 +12,6 @@ public:
   Arm(){}
   ~Arm(){}
   
-private:
   Turret turret;
   Fergelli shoulder;
   Fergelli elbow;
