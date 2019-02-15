@@ -1,6 +1,8 @@
 #ifndef FERGELLI_H
 #define FERGELLI_H
 
+// Jacob
+
 //fergelli is the brand of linear actuator we are using for the shoulder and elbow
 
 using namespace std;
