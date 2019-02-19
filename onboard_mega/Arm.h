@@ -12,10 +12,10 @@ public:
   Arm(){}
   ~Arm(){}
   
-  Turret turret;
-  Fergelli shoulder;
-  Fergelli elbow;
-  Wrist wrist;
-  Hand hand;
+  Turret turret();
+  Fergelli shoulder(SHOULDER_ADDRESS);
+  Fergelli elbow(ELBOW_ADDRESS);
+  Wrist wrist(WRIST_ADDRESS;
+  Hand hand();
 };
 
