@@ -1,11 +1,13 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+#include <Arduino.h>
+#include <JrkG2.h>
+
 #define I2C_ADDRESS 8
 #define ESCON_RPM_RANGE_MIN -6000
 #define ESCON_RPM_RANGE_MAX 6000
 #define NUM_WHEELS 6
-
 
 #define LEFT_FRONT_WHEEL_SET_SPEED 2
 #define LEFT_FRONT_WHEEL_ENABLE 22
@@ -44,16 +46,15 @@
 #define RIGHT_FRONT_WHEEL_ACTUAL_SPEED A13
 
 
-#define SHOULDER_ADDRESS 11
-#define ELBOW_ADDRESS 12
-#define WRIST_ADDRESS 13
+const uint8_t SHOULDER_ADDRESS = 11;
+const uint8_t ELBOW_ADDRESS = 12;
+const uint8_t WRIST_ADDRESS = 13;
+
 #define LEFT_HAND_PWM 9
 #define RIGHT_HAND_PWM 10
 #define LEFT_HAND_LN_A 40
 #define LEFT_HAND_LN_B 41
 #define RIGHT_HAND_LN_A 42
 #define RIGHT_HAND_LN_B 43
-
-
 
 #endif

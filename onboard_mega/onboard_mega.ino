@@ -3,11 +3,12 @@
 #include <Wire.h>
 #include "Globals.h"
 #include "Wheels.h"
+#include "Arm.h"
 
 using namespace std;
 
 Wheels wheels;
-Arm arm();
+Arm arm;
 bool writeWheelParams = true;
 
 void setup() {
@@ -67,6 +68,7 @@ void setWheelParams() {
     }
     writeWheelParams = true;
   } else {
+    flushWire();
     Serial.println("wrong number of bytes sent in: setWheelParams");
   }
 }
@@ -77,10 +79,15 @@ void setWheelParams() {
 
 void setArmParams() {
   if (Wire.available() == 10) {
-    arm.turret.set_params(Wire.read(), Wire.read()); // params are speed and dir in that order
-    arm.shoulder.set_params(Wire.read(), Wire.read()); // params are pos_high_byte and pos_low_byte in that order!
-    arm.eldbow.set_params(Wire.read(), Wire.read()); // params are pos_high_byte and pos_low_byte in that order!
-    arm.wrist.set_params(Wire.read(), Wire.read()); // params are 
+    arm.set_turret_params(Wire.read(), Wire.read()); // params are speed and dir in that order
+    arm.set_shoulder_params(Wire.read(), Wire.read()); // params are pos_high_byte and pos_low_byte in that order!
+    arm.set_elbow_params(Wire.read(), Wire.read()); // params are pos_high_byte and pos_low_byte in that order!
+    arm.set_wrist_params(Wire.read(), Wire.read()); 
+    arm.set_hand_params(Wire.read(), Wire.read()); 
+  }
+  else {
+    // maybe notify someone that this failed????
+    flushWire();
   }
 }
 
