@@ -2,7 +2,6 @@
 #define GLOBALS_H
 
 #include <Arduino.h>
-#include <JrkG2.h>
 
 #define I2C_ADDRESS 8
 #define ESCON_RPM_RANGE_MIN -6000

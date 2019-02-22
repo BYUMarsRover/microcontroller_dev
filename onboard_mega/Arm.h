@@ -20,7 +20,9 @@ public:
   }
   
   void set_shoulder_params(byte arg1, byte arg2) {
-    shoulder.setTarget((arg1 << 8) | arg2);
+//    uint16_t val = (arg1 << 8) | arg2;
+//    shoulder.setTarget(val);
+//    Serial.println("shoulder params set: " + val);
   }
   
   void set_elbow_params(byte arg1, byte arg2) {
