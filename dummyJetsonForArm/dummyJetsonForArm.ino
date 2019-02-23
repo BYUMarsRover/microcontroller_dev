@@ -1,8 +1,7 @@
-#include "Shoe.h"
 #include <Wire.h>
 
 const uint16_t SHOULDER_MAX = 2260;
-const uint16_t SHOULDER_MIN = 150;
+const uint16_t SHOULDER_MIN = 300;
 const uint16_t ELBOW_MAX = 2250;
 const uint16_t ELBOW_MIN = 190;
  
@@ -44,11 +43,16 @@ void setup() {
   arm_p_max.shoulder_low = SHOULDER_MAX;
   arm_p_max.elbow_high = ELBOW_MAX >> 8;
   arm_p_max.elbow_low = ELBOW_MAX;
+  arm_p_max.wrist_speed = 0;
+  arm_p_max.wrist_dir = 1;
 
   arm_p_min.shoulder_high = SHOULDER_MIN >> 8;
   arm_p_min.shoulder_low = SHOULDER_MIN;
   arm_p_min.elbow_high = ELBOW_MIN >> 8;
   arm_p_min.elbow_low = ELBOW_MIN;
+  arm_p_min.wrist_speed = 0;
+  arm_p_min.wrist_dir = 0;
+  
   Wire.begin(); // join i2c bus (address optional for master)
   delay(100);
 }
@@ -68,7 +72,7 @@ void loop() {
   Wire.write(arm_p_max.hand_dir);
   Wire.endTransmission(); 
   digitalWrite(LED_BUILTIN, LOW);
-  delay(20000);
+  delay(10000);
 
     digitalWrite(LED_BUILTIN, HIGH);
   Wire.beginTransmission(8); // transmit to device #8
@@ -84,5 +88,5 @@ void loop() {
   Wire.write(arm_p_min.hand_dir);
   Wire.endTransmission(); 
   digitalWrite(LED_BUILTIN, LOW);
-  delay(20000);
+  delay(10000);
 }

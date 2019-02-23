@@ -6,6 +6,7 @@
 
 JrkG2I2C shoulder(SHOULDER_ADDRESS);
 JrkG2I2C elbow(ELBOW_ADDRESS);
+JrkG2I2C wrist(WRIST_ADDRESS);
 
 using namespace std;
 
@@ -47,7 +48,13 @@ public:
   }
 
   void write_wrist_params() {
-    //do this
+    int val = map(wrist_speed,0,255,0,2048);
+    if (wrist_dir == 0) {
+      val = -val + 2048;
+    } else {
+      val += 2047;
+    }
+    wrist.setTarget(val);
   }
 
   void write_hand_params() {

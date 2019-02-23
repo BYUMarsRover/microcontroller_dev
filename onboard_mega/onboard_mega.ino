@@ -46,16 +46,11 @@ void checkClearErrorStates() {
 }
 
 void receiveHandler(int byteCount) {
-  digitalWrite(13, HIGH);
-  int preamble = Wire.read();
-  Serial.println(preamble);
-  delay(500);
-  switch(preamble) {
+  switch(Wire.read()) {
     case 1: setWheelParams(); break;
-    case 2: setArmParams(); flushWire(); break;
+    case 2: setArmParams(); break;
     default: flushWire(); break;
   }
-  digitalWrite(13, LOW);
 }
 
 void flushWire() {
@@ -73,7 +68,6 @@ void requestHandler() {
 }
 
 void setWheelParams() {
-  Serial.println("setWheelParams called");
   if (Wire.available() == 12) { 
     for (int i = 0; i < NUM_WHEELS; i++) {
       wheels.wheelList[i].set_speed = Wire.read();
@@ -82,12 +76,10 @@ void setWheelParams() {
     writeWheelParams = true;
   } else {
     flushWire();
-    Serial.println("wrong number of bytes sent in: setWheelParams");
   }
 }
 
 void setArmParams() {
-  digitalWrite(LED_BUILTIN, HIGH);
   if (Wire.available() == 9) {
     arm.turret_high = Wire.read();
     arm.turret_low = Wire.read();
@@ -104,7 +96,6 @@ void setArmParams() {
     //maybe notify someone that this failed????
     flushWire();
   }
-  digitalWrite(LED_BUILTIN, LOW);
 }
 
 
