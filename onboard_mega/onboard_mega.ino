@@ -80,7 +80,7 @@ void setWheelParams() {
 }
 
 void setArmParams() {
-  if (Wire.available() == 9) {
+  if (Wire.available() == 10) {
     arm.turret_high = Wire.read();
     arm.turret_low = Wire.read();
     arm.shoulder_high = Wire.read();
@@ -89,6 +89,7 @@ void setArmParams() {
     arm.elbow_low = Wire.read();
     arm.wrist_speed = Wire.read();
     arm.wrist_dir = Wire.read();
+    arm.hand_speed = Wire.read();
     arm.hand_dir = Wire.read();
     write_arm_params = true; 
   }

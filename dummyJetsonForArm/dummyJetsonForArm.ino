@@ -18,6 +18,7 @@ public:
     elbow_low = 0;
     wrist_speed = 0;
     wrist_dir = 0;
+    hand_speed = 0;
     hand_dir = 0;
     empty = 0;
   }
@@ -29,6 +30,7 @@ public:
   uint8_t elbow_low;
   uint8_t wrist_speed;
   uint8_t wrist_dir;
+  uint8_t hand_speed;
   uint8_t hand_dir;
   uint8_t empty;
 };
@@ -43,15 +45,19 @@ void setup() {
   arm_p_max.shoulder_low = SHOULDER_MAX;
   arm_p_max.elbow_high = ELBOW_MAX >> 8;
   arm_p_max.elbow_low = ELBOW_MAX;
-  arm_p_max.wrist_speed = 0;
-  arm_p_max.wrist_dir = 1;
+  arm_p_max.wrist_speed = 10;
+  arm_p_max.wrist_dir = 0;
+  arm_p_max.hand_speed = 255;
+  arm_p_max.hand_dir = 1;
 
   arm_p_min.shoulder_high = SHOULDER_MIN >> 8;
   arm_p_min.shoulder_low = SHOULDER_MIN;
   arm_p_min.elbow_high = ELBOW_MIN >> 8;
   arm_p_min.elbow_low = ELBOW_MIN;
-  arm_p_min.wrist_speed = 0;
-  arm_p_min.wrist_dir = 0;
+  arm_p_min.wrist_speed = 10;
+  arm_p_min.wrist_dir = 1;
+  arm_p_min.hand_speed = 255;
+  arm_p_min.hand_dir = 0;
   
   Wire.begin(); // join i2c bus (address optional for master)
   delay(100);
@@ -69,6 +75,7 @@ void loop() {
   Wire.write(arm_p_max.elbow_low);
   Wire.write(arm_p_max.wrist_speed);
   Wire.write(arm_p_max.wrist_dir);
+  Wire.write(arm_p_max.hand_speed);
   Wire.write(arm_p_max.hand_dir);
   Wire.endTransmission(); 
   digitalWrite(LED_BUILTIN, LOW);
@@ -85,6 +92,7 @@ void loop() {
   Wire.write(arm_p_min.elbow_low);
   Wire.write(arm_p_min.wrist_speed);
   Wire.write(arm_p_min.wrist_dir);
+  Wire.write(arm_p_max.hand_speed);
   Wire.write(arm_p_min.hand_dir);
   Wire.endTransmission(); 
   digitalWrite(LED_BUILTIN, LOW);

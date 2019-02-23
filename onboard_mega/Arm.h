@@ -54,11 +54,26 @@ public:
     } else {
       val += 2047;
     }
+    Serial.println(val);
     wrist.setTarget(val);
   }
 
+//  #define LEFT_HAND_PWM 9
+//  #define RIGHT_HAND_PWM 10
+//  #define LEFT_HAND_LN_A 40
+//  #define LEFT_HAND_LN_B 41
+//  #define RIGHT_HAND_LN_A 42
+//  #define RIGHT_HAND_LN_B 43
+
   void write_hand_params() {
-    //do this!
+    
+    digitalWrite(LEFT_HAND_LN_A, hand_dir);
+    digitalWrite(LEFT_HAND_LN_B, !hand_dir);
+    digitalWrite(RIGHT_HAND_LN_A, hand_dir);
+    digitalWrite(RIGHT_HAND_LN_B, !hand_dir);
+
+    analogWrite(LEFT_HAND_PWM, hand_speed);
+    analogWrite(RIGHT_HAND_PWM, hand_speed);
   }
 
   byte turret_high;
@@ -69,6 +84,7 @@ public:
   byte elbow_low;
   byte wrist_speed;
   byte wrist_dir;
+  byte hand_speed;
   byte hand_dir;
 
 };
