@@ -17,9 +17,9 @@ void setup() {
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-  Serial.begin(9600);
-  delay(500);
-  Serial.println("starting...");
+//  Serial.begin(9600);
+//  delay(500);
+//  Serial.println("starting...");
 }
 
 void loop() {
@@ -46,6 +46,8 @@ void checkClearErrorStates() {
 }
 
 void receiveHandler(int byteCount) {
+//  Serial.println("rec");
+  delay(100);
   switch(Wire.read()) {
     case 1: setWheelParams(); break;
     case 2: setArmParams(); break;
@@ -80,7 +82,9 @@ void setWheelParams() {
 }
 
 void setArmParams() {
-  if (Wire.available() == 10) {
+//  Serial.println("setArm");
+//  Serial.println(Wire.available());
+  if (Wire.available() == 9) {
     arm.turret_high = Wire.read();
     arm.turret_low = Wire.read();
     arm.shoulder_high = Wire.read();
