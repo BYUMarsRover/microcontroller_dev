@@ -56,4 +56,7 @@ const uint8_t WRIST_ADDRESS = 13;
 #define RIGHT_HAND_LN_A 42
 #define RIGHT_HAND_LN_B 43
 
+const int ARM_TURRET = 9;
+const int SENSOR_PIN = A14;
+
 #endif

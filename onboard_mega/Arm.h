@@ -33,8 +33,47 @@ public:
     write_hand_params();
   }
 
+  //These variables need to persist between calls to write>turret_params() so they are declared at class scope
+  int oneCheck = 1;
+  int twoCheck = 2;
+  int threeCheck = 3;
   void write_turret_params() {
     
+    uint16_t desiredAngle = (turret_high << 8) | turret_low;
+    // change desiredAngle to angle from 0-360
+    
+    float sensorValue = analogRead(SENSOR_PIN);             // gives number from 100-917
+    sensorValue = (sensorValue - 100) / 2.269444;           // changes to number from 0-360
+
+    if (desiredAngle > (sensorValue + 2)) {                 
+      //turn the motor left
+      analogWrite(ARM_TURRET, 255);                   // Might need to switch "right" and "left" code depending on which way the motor is facing
+      threeCheck = twoCheck;
+      twoCheck = oneCheck;
+      oneCheck = sensorValue;
+    }
+
+    else if (desiredAngle < (sensorValue - 2)) {
+      //turn the motor right
+      analogWrite(ARM_TURRET, 0);
+      threeCheck = twoCheck;
+      twoCheck = oneCheck;
+      oneCheck = sensorValue;
+    }
+
+    else {
+      //stop
+      analogWrite(ARM_TURRET, 127);
+    }
+      
+    // if the arm has stopped moving (even though it should be)
+    if (oneCheck == twoCheck && oneCheck == threeCheck) {
+      //stop the motor
+      analogWrite(ARM_TURRET, 127);
+        
+      //send vibration to pilot
+      delay(5000);
+    }
   }
   
   void write_shoulder_params() {
