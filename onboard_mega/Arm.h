@@ -35,6 +35,8 @@ public:
   int oneCheck = 1;
   int twoCheck = 2;
   int threeCheck = 3;
+  int turretCounter = 0;
+  const int COUNTER_LIMIT = 100; // # iterations to wait before updating check values
   const int TURRET_BUFFER = 8; // degrees in wiggle room :)
   const int TURRET_TURN_RIGHT = 200;
   const int TURRET_TURN_LEFT = 54;
@@ -56,17 +58,13 @@ public:
     if (desiredAngle > (sensorValue + TURRET_BUFFER)) {                 
       //turn the motor left
       analogWrite(ARM_TURRET, TURRET_TURN_RIGHT);                   // Might need to switch "right" and "left" code depending on which way the motor is facing
-      threeCheck = twoCheck;
-      twoCheck = oneCheck;
-      oneCheck = sensorValue;
+      turretCounter ++;
     }
 
     else if (desiredAngle < (sensorValue - TURRET_BUFFER)) {
       //turn the motor right
       analogWrite(ARM_TURRET, TURRET_TURN_LEFT);
-      threeCheck = twoCheck;
-      twoCheck = oneCheck;
-      oneCheck = sensorValue;
+      turretCounter ++;
     }
 
     else {
@@ -74,6 +72,12 @@ public:
       analogWrite(ARM_TURRET, TURRET_STOP);
 //      Serial.println("stop");
 
+    }
+
+    if (turretCounter == COUNTER_LIMIT) {
+      threeCheck = twoCheck;
+      twoCheck = oneCheck;
+      oneCheck = sensorValue;
     }
       
     // if the arm has stopped moving (even though it should be)
