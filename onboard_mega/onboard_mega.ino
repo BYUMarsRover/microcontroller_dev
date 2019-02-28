@@ -17,22 +17,24 @@ void setup() {
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-//  Serial.begin(9600);
+  Serial.begin(9600);
 //  delay(500);
 //  Serial.println("starting...");
 }
 
 void loop() {
-  if (writeWheelParams) {
-    wheels.writeParams();
-    writeWheelParams = false;
-  }
+  arm.write_turret_params(); // turret actual angle is checked continually and compared to desired angle.
   if (write_arm_params) {
     arm.write_params();
     write_arm_params = false;
   }
-  checkClearErrorStates();
-  wheels.updateFeedbackData();
+//  if (writeWheelParams) {
+//    wheels.writeParams();
+//    writeWheelParams = false;
+//  }
+
+//  checkClearErrorStates();
+//  wheels.updateFeedbackData();
 }
 
 void checkClearErrorStates() {
@@ -47,7 +49,6 @@ void checkClearErrorStates() {
 
 void receiveHandler(int byteCount) {
 //  Serial.println("rec");
-  delay(100);
   switch(Wire.read()) {
     case 1: setWheelParams(); break;
     case 2: setArmParams(); break;
@@ -84,7 +85,7 @@ void setWheelParams() {
 void setArmParams() {
 //  Serial.println("setArm");
 //  Serial.println(Wire.available());
-  if (Wire.available() == 9) {
+  if (Wire.available() == 10) {
     arm.turret_high = Wire.read();
     arm.turret_low = Wire.read();
     arm.shoulder_high = Wire.read();
@@ -105,6 +106,9 @@ void setArmParams() {
 
 
 void setPinModes() {
+  pinMode(ARM_TURRET_FB, INPUT);
+  pinMode(ARM_TURRET, OUTPUT);
+  
   pinMode(RIGHT_FRONT_WHEEL_SET_SPEED, OUTPUT);
   pinMode(RIGHT_FRONT_WHEEL_DIR, OUTPUT);
   pinMode(RIGHT_FRONT_WHEEL_ENABLE, OUTPUT);

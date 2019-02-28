@@ -14,7 +14,7 @@ class Arm {
 public:
   Arm(){
     turret_high = 0;
-    turret_low = 0;
+    turret_low = 230;
     shoulder_high = 0;
     shoulder_low = 0;
     elbow_high = 0;
@@ -26,36 +26,44 @@ public:
   ~Arm(){}
 
   void write_params() {
-    write_turret_params();
     write_shoulder_params();
     write_elbow_params();
     write_wrist_params();
-    write_hand_params();
+//    write_hand_params();
   }
 
-  //These variables need to persist between calls to write>turret_params() so they are declared at class scope
   int oneCheck = 1;
   int twoCheck = 2;
   int threeCheck = 3;
+  const int TURRET_BUFFER = 8; // degrees in wiggle room :)
+  const int TURRET_TURN_RIGHT = 200;
+  const int TURRET_TURN_LEFT = 54;
+  const int TURRET_STOP = 127;
+
+  
   void write_turret_params() {
     
     uint16_t desiredAngle = (turret_high << 8) | turret_low;
+    Serial.println(desiredAngle);
+//    desiredAngle = 230;
     // change desiredAngle to angle from 0-360
     
-    float sensorValue = analogRead(SENSOR_PIN);             // gives number from 100-917
+    float sensorValue = analogRead(ARM_TURRET_FB);             // gives number from 100-917
     sensorValue = (sensorValue - 100) / 2.269444;           // changes to number from 0-360
+//    Serial.print("sensor Value: ");
+//    Serial.println(sensorValue);
 
-    if (desiredAngle > (sensorValue + 2)) {                 
+    if (desiredAngle > (sensorValue + TURRET_BUFFER)) {                 
       //turn the motor left
-      analogWrite(ARM_TURRET, 255);                   // Might need to switch "right" and "left" code depending on which way the motor is facing
+      analogWrite(ARM_TURRET, TURRET_TURN_RIGHT);                   // Might need to switch "right" and "left" code depending on which way the motor is facing
       threeCheck = twoCheck;
       twoCheck = oneCheck;
       oneCheck = sensorValue;
     }
 
-    else if (desiredAngle < (sensorValue - 2)) {
+    else if (desiredAngle < (sensorValue - TURRET_BUFFER)) {
       //turn the motor right
-      analogWrite(ARM_TURRET, 0);
+      analogWrite(ARM_TURRET, TURRET_TURN_LEFT);
       threeCheck = twoCheck;
       twoCheck = oneCheck;
       oneCheck = sensorValue;
@@ -63,16 +71,17 @@ public:
 
     else {
       //stop
-      analogWrite(ARM_TURRET, 127);
+      analogWrite(ARM_TURRET, TURRET_STOP);
+//      Serial.println("stop");
+
     }
       
     // if the arm has stopped moving (even though it should be)
     if (oneCheck == twoCheck && oneCheck == threeCheck) {
       //stop the motor
-      analogWrite(ARM_TURRET, 127);
-        
+      analogWrite(ARM_TURRET, TURRET_STOP);
       //send vibration to pilot
-      delay(5000);
+//      delay(5000);
     }
   }
   
@@ -93,7 +102,7 @@ public:
     } else {
       val += 2047;
     }
-    Serial.println(val);
+    //Serial.println(val);
     wrist.setTarget(val);
   }
 
