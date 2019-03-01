@@ -25,17 +25,23 @@ public:
   }
   ~Arm(){}
 
+  // finish this later... the intention is to init the arm turret target to the current location at startup to prevent the arm from thrashing on startup
+  void init_turret() {
+    float sensorValue = analogRead(ARM_TURRET_FB);             // gives number from 100-917
+    sensorValue = (sensorValue - 100) / 2.269444;           // changes to number from 0-360
+  }
+
   void write_params() {
     write_shoulder_params();
     write_elbow_params();
     write_wrist_params();
-//    write_hand_params();
+    write_hand_params();
   }
 
   int oneCheck = 1;
   int twoCheck = 2;
   int threeCheck = 3;
-  const int TURRET_BUFFER = 8; // degrees in wiggle room :)
+  const int TURRET_BUFFER = 12; // degrees in wiggle room :)
   const int TURRET_TURN_RIGHT = 200;
   const int TURRET_TURN_LEFT = 54;
   const int TURRET_STOP = 127;
@@ -44,14 +50,14 @@ public:
   void write_turret_params() {
     
     uint16_t desiredAngle = (turret_high << 8) | turret_low;
-    Serial.println(desiredAngle);
+//    Serial.println(desiredAngle);
 //    desiredAngle = 230;
     // change desiredAngle to angle from 0-360
     
     float sensorValue = analogRead(ARM_TURRET_FB);             // gives number from 100-917
     sensorValue = (sensorValue - 100) / 2.269444;           // changes to number from 0-360
-//    Serial.print("sensor Value: ");
-//    Serial.println(sensorValue);
+    Serial.print("sensor Value: ");
+    Serial.println(sensorValue);
 
     if (desiredAngle > (sensorValue + TURRET_BUFFER)) {                 
       //turn the motor left
@@ -114,7 +120,8 @@ public:
 //  #define RIGHT_HAND_LN_B 43
 
   void write_hand_params() {
-    
+
+//    Serial.println("writing gripper params");
     digitalWrite(LEFT_HAND_LN_A, hand_dir);
     digitalWrite(LEFT_HAND_LN_B, !hand_dir);
     digitalWrite(RIGHT_HAND_LN_A, hand_dir);
@@ -122,6 +129,11 @@ public:
 
     analogWrite(LEFT_HAND_PWM, hand_speed);
     analogWrite(RIGHT_HAND_PWM, hand_speed);
+//    Serial.print("done. dir: ");
+//    Serial.print(hand_dir);
+//    Serial.print("___ speed: ");
+//    Serial.println(hand_speed);
+    
   }
 
   byte turret_high;

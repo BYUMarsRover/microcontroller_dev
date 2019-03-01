@@ -18,6 +18,7 @@ void setup() {
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
   Serial.begin(9600);
+//  arm.init_turret();
 //  delay(500);
 //  Serial.println("starting...");
 }
@@ -28,13 +29,13 @@ void loop() {
     arm.write_params();
     write_arm_params = false;
   }
-//  if (writeWheelParams) {
-//    wheels.writeParams();
-//    writeWheelParams = false;
-//  }
+  if (writeWheelParams) {
+    wheels.writeParams();
+    writeWheelParams = false;
+  }
 
-//  checkClearErrorStates();
-//  wheels.updateFeedbackData();
+  checkClearErrorStates();
+  wheels.updateFeedbackData();
 }
 
 void checkClearErrorStates() {
