@@ -4,6 +4,9 @@
 #include <Arduino.h>
 #include <JrkG2.h>
 
+#define AVERAGE_LENGTH 200 //The number of samples to keep in our running average. Will need to tune this
+#define NULL_ANGLE -1 //flag to know we have reach end of running average array
+
 JrkG2I2C shoulder(SHOULDER_ADDRESS);
 JrkG2I2C elbow(ELBOW_ADDRESS);
 JrkG2I2C wrist(WRIST_ADDRESS);
@@ -22,6 +25,11 @@ public:
     wrist_speed = 0;
     wrist_dir = 0;
     hand_dir = 0;
+    
+    //init running average array
+    for (int i = 0; i < AVERAGE_LENGTH; i++) {
+      running_average[i] = NULL_ANGLE;
+    }
   }
   ~Arm(){}
 
@@ -48,7 +56,7 @@ public:
 
   
   void write_turret_params() {
-    
+    static uint16_t runningAverageIndex = 0;
     uint16_t desiredAngle = (turret_high << 8) | turret_low;
 //    Serial.println(desiredAngle);
 //    desiredAngle = 230;
@@ -59,7 +67,19 @@ public:
     Serial.print("sensor Value: ");
     Serial.println(sensorValue);
 
-    if (desiredAngle > (sensorValue + TURRET_BUFFER)) {                 
+    //update running average
+    running_average[runningAverageIndex] = sensorValue;
+    runningAverageIndex = (runningAverageIndex == AVERAGE_LENGTH-1) ? 0 : runningAverageIndex+1;//increment the index
+
+    //calculate the average
+    float averageAngle = 0;
+    float sum = 0;
+    for (int i = 0; i < AVERAGE_LENGTH && running_average[i] > NULL_ANGLE; i++) {//loop for the whole array or until we get a null angle
+      sum += running_average[i];
+    }
+    averageAngle = sum / AVERAGE_LENGTH;
+
+    if (desiredAngle > (averageAngle + TURRET_BUFFER)) {                 
       //turn the motor left
       analogWrite(ARM_TURRET, TURRET_TURN_RIGHT);                   // Might need to switch "right" and "left" code depending on which way the motor is facing
       threeCheck = twoCheck;
@@ -67,7 +87,7 @@ public:
       oneCheck = sensorValue;
     }
 
-    else if (desiredAngle < (sensorValue - TURRET_BUFFER)) {
+    else if (desiredAngle < (averageAngle - TURRET_BUFFER)) {
       //turn the motor right
       analogWrite(ARM_TURRET, TURRET_TURN_LEFT);
       threeCheck = twoCheck;
@@ -87,7 +107,6 @@ public:
       //stop the motor
       analogWrite(ARM_TURRET, TURRET_STOP);
       //send vibration to pilot
-//      delay(5000);
     }
   }
   
@@ -146,7 +165,7 @@ public:
   byte wrist_dir;
   byte hand_speed;
   byte hand_dir;
-
+  float running_average[AVERAGE_LENGTH]; //Array to hold a running average of the turret positions
 };
 
 #endif
