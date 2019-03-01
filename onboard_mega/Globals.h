@@ -59,4 +59,6 @@ const uint8_t WRIST_ADDRESS = 13;
 const int ARM_TURRET = 8;
 const int ARM_TURRET_FB = A14;
 
+const int POWER_INDICATOR = 13;
+
 #endif

@@ -13,11 +13,12 @@ bool writeWheelParams = true;
 bool write_arm_params = true;
 
 void setup() {
+  digitalWrite(POWER_INDICATOR, HIGH); // so we can tell the Mega is powered from breakoutboard.
   setPinModes();
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-  Serial.begin(9600);
+//  Serial.begin(9600);
 //  arm.init_turret();
 //  delay(500);
 //  Serial.println("starting...");
@@ -107,6 +108,7 @@ void setArmParams() {
 
 
 void setPinModes() {
+  pinMode(POWER_INDICATOR, OUTPUT);
   pinMode(ARM_TURRET_FB, INPUT);
   pinMode(ARM_TURRET, OUTPUT);
   

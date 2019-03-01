@@ -56,8 +56,8 @@ public:
     
     float sensorValue = analogRead(ARM_TURRET_FB);             // gives number from 100-917
     sensorValue = (sensorValue - 100) / 2.269444;           // changes to number from 0-360
-    Serial.print("sensor Value: ");
-    Serial.println(sensorValue);
+//    Serial.print("sensor Value: ");
+//    Serial.println(sensorValue);
 
     if (desiredAngle > (sensorValue + TURRET_BUFFER)) {                 
       //turn the motor left
