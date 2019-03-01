@@ -30,6 +30,7 @@ public:
     for (int i = 0; i < AVERAGE_LENGTH; i++) {
       running_average[i] = NULL_ANGLE;
     }
+    averageAngle = NULL_ANGLE;
   }
   ~Arm(){}
 
@@ -71,8 +72,7 @@ public:
     running_average[runningAverageIndex] = sensorValue;
     runningAverageIndex = (runningAverageIndex == AVERAGE_LENGTH-1) ? 0 : runningAverageIndex+1;//increment the index
 
-    //calculate the average
-    float averageAngle = 0;
+    //calculate the average    
     float sum = 0;
     for (int i = 0; i < AVERAGE_LENGTH && running_average[i] > NULL_ANGLE; i++) {//loop for the whole array or until we get a null angle
       sum += running_average[i];
@@ -155,6 +155,23 @@ public:
     
   }
 
+  //function to package data from the arm into the feedback bytes
+  void updateFeedbackData() {
+    turret_fb_high = ((int) averageAngle) >> 8;
+    turret_fb_low = ((int) averageAngle) & 0x00FF;
+
+    //get feedback from the linear actuators
+    uint16_t shoulderFB = shoulder.getFeedback();
+    uint16_t elbowFB = elbow.getFeedback();
+
+    shoulder_fb_high = ((int) shoulderFB) >> 8;
+    shoulder_fb_low = ((int) shoulderFB) & 0x00FF;
+
+    elbow_fb_high = ((int) elbowFB) >> 8;
+    elbow_fb_low = ((int) elbowFB) & 0x00FF;
+  }
+
+  //control bytes
   byte turret_high;
   byte turret_low;
   byte shoulder_high;
@@ -166,6 +183,15 @@ public:
   byte hand_speed;
   byte hand_dir;
   float running_average[AVERAGE_LENGTH]; //Array to hold a running average of the turret positions
+  float averageAngle;
+
+  //feedback bytes
+  byte turret_fb_high;
+  byte turret_fb_low;
+  byte shoulder_fb_high;
+  byte shoulder_fb_low;
+  byte elbow_fb_high;
+  byte elbow_fb_low;
 };
 
 #endif

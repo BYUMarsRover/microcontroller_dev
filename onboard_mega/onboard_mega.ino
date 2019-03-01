@@ -36,6 +36,7 @@ void loop() {
 
   checkClearErrorStates();
   wheels.updateFeedbackData();
+  arm.updateFeedbackData(); //might need to remove this
 }
 
 void checkClearErrorStates() {
@@ -48,6 +49,7 @@ void checkClearErrorStates() {
   }
 }
 
+//function runs when the jetson gives us data
 void receiveHandler(int byteCount) {
 //  Serial.println("rec");
   switch(Wire.read()) {
@@ -63,12 +65,23 @@ void flushWire() {
   }
 }
 
+//function to give feedback to the jetson
 void requestHandler() {
+  //write wheels feedback bytes
   for (int i = 0; i < NUM_WHEELS; i++) {
 //    Wire.write((uint8_t*)&wheels.wheelList[i].actual_speed, 2);
     Wire.write(wheels.wheelList[i].actual_speed);
     Wire.write(wheels.wheelList[i].error);
   }
+
+  //write arm feedback bytes
+  /*
+  Wire.write(arm.turret_fb_high);
+  Wire.write(arm.turret_fb_low);
+  Wire.write(arm.shoulder_fb_high);
+  Wire.write(arm.shoulder_fb_low);
+  Wire.write(arm.elbow_fb_high);
+  Wire.write(arm.elbow_fb_low); */
 }
 
 void setWheelParams() {
