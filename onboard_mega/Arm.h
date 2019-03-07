@@ -25,6 +25,19 @@ public:
   }
   ~Arm(){}
 
+  void printVals() {
+    Serial.println(turret_high);
+    Serial.println(turret_low);
+    Serial.println(shoulder_high);
+    Serial.println(shoulder_low);
+    Serial.println(elbow_high);
+    Serial.println(elbow_low);
+    Serial.println(wrist_speed);
+    Serial.println(wrist_dir);
+    Serial.println(hand_speed);
+    Serial.println(hand_dir);
+  }
+
   // finish this later... the intention is to init the arm turret target to the current location at startup to prevent the arm from thrashing on startup
   void init_turret() {
     float sensorValue = analogRead(ARM_TURRET_FB);             // gives number from 100-917
@@ -94,11 +107,13 @@ public:
   void write_shoulder_params() {
     uint16_t val = (shoulder_high << 8) | shoulder_low;
     shoulder.setTarget(val);
+    Serial.println(val);
   }
   
   void write_elbow_params() {
     uint16_t val = (elbow_high << 8) | elbow_low;
     elbow.setTarget(val);
+    Serial.println(val);
   }
 
   void write_wrist_params() {

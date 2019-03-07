@@ -18,7 +18,7 @@ void setup() {
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-//  Serial.begin(9600);
+  Serial.begin(9600);
 //  arm.init_turret();
 //  delay(500);
 //  Serial.println("starting...");
@@ -50,7 +50,7 @@ void checkClearErrorStates() {
 }
 
 void receiveHandler(int byteCount) {
-//  Serial.println("rec");
+  Serial.println("rec");
   switch(Wire.read()) {
     case 1: setWheelParams(); break;
     case 2: setArmParams(); break;
@@ -99,6 +99,7 @@ void setArmParams() {
     arm.hand_speed = Wire.read();
     arm.hand_dir = Wire.read();
     write_arm_params = true; 
+    arm.printVals();
   }
   else {
     //maybe notify someone that this failed????
