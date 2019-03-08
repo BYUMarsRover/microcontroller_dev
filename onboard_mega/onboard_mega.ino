@@ -11,25 +11,26 @@ Wheels wheels;
 Arm arm;
 bool writeWheelParams = true;
 bool write_arm_params = true;
+bool receivedi2c = false; 
 
 void setup() {
-  digitalWrite(POWER_INDICATOR, HIGH); // so we can tell the Mega is powered from breakoutboard.
   setPinModes();
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-  Serial.begin(9600);
+//  Serial.begin(9600);
 //  arm.init_turret();
-//  delay(500);
+  delay(500);
+  digitalWrite(POWER_INDICATOR, HIGH); // so we can tell the Mega is powered from breakoutboard.
 //  Serial.println("starting...");
 }
 
 void loop() {
-  arm.write_turret_params(); // turret actual angle is checked continually and compared to desired angle.
-  if (write_arm_params) {
-    arm.write_params();
-    write_arm_params = false;
-  }
+//  arm.write_turret_params(); // turret actual angle is checked continually and compared to desired angle.
+//  if (write_arm_params) {
+//    arm.write_params();
+//    write_arm_params = false;
+//  }
   if (writeWheelParams) {
     wheels.writeParams();
     writeWheelParams = false;
@@ -50,7 +51,6 @@ void checkClearErrorStates() {
 }
 
 void receiveHandler(int byteCount) {
-  Serial.println("rec");
   switch(Wire.read()) {
     case 1: setWheelParams(); break;
     case 2: setArmParams(); break;
@@ -99,7 +99,7 @@ void setArmParams() {
     arm.hand_speed = Wire.read();
     arm.hand_dir = Wire.read();
     write_arm_params = true; 
-    arm.printVals();
+//    arm.printVals();
   }
   else {
     //maybe notify someone that this failed????
@@ -110,42 +110,35 @@ void setArmParams() {
 
 void setPinModes() {
   pinMode(POWER_INDICATOR, OUTPUT);
-  pinMode(ARM_TURRET_FB, INPUT);
   pinMode(ARM_TURRET, OUTPUT);
   
   pinMode(RIGHT_FRONT_WHEEL_SET_SPEED, OUTPUT);
   pinMode(RIGHT_FRONT_WHEEL_DIR, OUTPUT);
   pinMode(RIGHT_FRONT_WHEEL_ENABLE, OUTPUT);
-  pinMode(RIGHT_FRONT_WHEEL_ACTUAL_SPEED, INPUT);
   pinMode(RIGHT_FRONT_WHEEL_ERROR, INPUT_PULLUP);
   
   pinMode(RIGHT_MIDDLE_WHEEL_SET_SPEED, OUTPUT);
   pinMode(RIGHT_MIDDLE_WHEEL_DIR, OUTPUT);
   pinMode(RIGHT_MIDDLE_WHEEL_ENABLE, OUTPUT);
-  pinMode(RIGHT_MIDDLE_WHEEL_ACTUAL_SPEED, INPUT);
   pinMode(RIGHT_MIDDLE_WHEEL_ERROR, INPUT_PULLUP);
   
   pinMode(RIGHT_REAR_WHEEL_SET_SPEED, OUTPUT);
   pinMode(RIGHT_REAR_WHEEL_DIR, OUTPUT);
   pinMode(RIGHT_REAR_WHEEL_ENABLE, OUTPUT);
-  pinMode(RIGHT_REAR_WHEEL_ACTUAL_SPEED, INPUT);
   pinMode(RIGHT_REAR_WHEEL_ERROR, INPUT_PULLUP);
   
   pinMode(LEFT_FRONT_WHEEL_SET_SPEED, OUTPUT);
   pinMode(LEFT_FRONT_WHEEL_DIR, OUTPUT);
   pinMode(LEFT_FRONT_WHEEL_ENABLE, OUTPUT);
-  pinMode(LEFT_FRONT_WHEEL_ACTUAL_SPEED, INPUT);
   pinMode(LEFT_FRONT_WHEEL_ERROR, INPUT_PULLUP);
   
   pinMode(LEFT_MIDDLE_WHEEL_SET_SPEED, OUTPUT);
   pinMode(LEFT_MIDDLE_WHEEL_DIR, OUTPUT);
   pinMode(LEFT_MIDDLE_WHEEL_ENABLE, OUTPUT);
-  pinMode(LEFT_MIDDLE_WHEEL_ACTUAL_SPEED, INPUT);
   pinMode(LEFT_MIDDLE_WHEEL_ERROR, INPUT_PULLUP);
   
   pinMode(LEFT_REAR_WHEEL_SET_SPEED, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_DIR, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_ENABLE, OUTPUT);
-  pinMode(LEFT_REAR_WHEEL_ACTUAL_SPEED, INPUT);
   pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);
 }

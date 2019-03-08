@@ -14,7 +14,7 @@ class Arm {
 public:
   Arm(){
     turret_high = 0;
-    turret_low = 230;
+    turret_low = 0;
     shoulder_high = 0;
     shoulder_low = 0;
     elbow_high = 0;
@@ -107,13 +107,13 @@ public:
   void write_shoulder_params() {
     uint16_t val = (shoulder_high << 8) | shoulder_low;
     shoulder.setTarget(val);
-    Serial.println(val);
+//    Serial.println(val);
   }
   
   void write_elbow_params() {
     uint16_t val = (elbow_high << 8) | elbow_low;
     elbow.setTarget(val);
-    Serial.println(val);
+//    Serial.println(val);
   }
 
   void write_wrist_params() {
