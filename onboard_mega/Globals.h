@@ -58,9 +58,6 @@ const int LEFT_HAND_LN_B = 41;
 const int RIGHT_HAND_LN_A = 42;
 const int RIGHT_HAND_LN_B = 43;
 
-const int ARM_TURRET = 8;
-const int ARM_TURRET_FB = A14;
-
 const int POWER_INDICATOR = 13;
 
 #endif

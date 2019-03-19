@@ -38,13 +38,8 @@ public:
     Serial.println(hand_dir);
   }
 
-  // finish this later... the intention is to init the arm turret target to the current location at startup to prevent the arm from thrashing on startup
-  void init_turret() {
-    float sensorValue = analogRead(ARM_TURRET_FB);             // gives number from 100-917
-    sensorValue = (sensorValue - 100) / 2.269444;           // changes to number from 0-360
-  }
-
   void write_params() {
+    write_turret_params();
     write_shoulder_params();
     write_elbow_params();
     write_wrist_params();
@@ -90,16 +85,8 @@ public:
     wrist.setTarget(val);
   }
 
-//  #define LEFT_HAND_PWM 9
-//  #define RIGHT_HAND_PWM 10
-//  #define LEFT_HAND_LN_A 40
-//  #define LEFT_HAND_LN_B 41
-//  #define RIGHT_HAND_LN_A 42
-//  #define RIGHT_HAND_LN_B 43
-
   void write_hand_params() {
-
-//    Serial.println("writing gripper params");
+    
     digitalWrite(LEFT_HAND_LN_A, hand_dir);
     digitalWrite(LEFT_HAND_LN_B, !hand_dir);
     digitalWrite(RIGHT_HAND_LN_A, hand_dir);
@@ -107,10 +94,6 @@ public:
 
     analogWrite(LEFT_HAND_PWM, hand_speed);
     analogWrite(RIGHT_HAND_PWM, hand_speed);
-//    Serial.print("done. dir: ");
-//    Serial.print(hand_dir);
-//    Serial.print("___ speed: ");
-//    Serial.println(hand_speed);
     
   }
 

@@ -26,11 +26,10 @@ void setup() {
 }
 
 void loop() {
-//  arm.write_turret_params(); // turret actual angle is checked continually and compared to desired angle.
-//  if (write_arm_params) {
-//    arm.write_params();
-//    write_arm_params = false;
-//  }
+  if (write_arm_params) {
+    arm.write_params();
+    write_arm_params = false;
+  }
   if (writeWheelParams) {
     wheels.writeParams();
     writeWheelParams = false;
@@ -110,7 +109,6 @@ void setArmParams() {
 
 void setPinModes() {
   pinMode(POWER_INDICATOR, OUTPUT);
-  pinMode(ARM_TURRET, OUTPUT);
   
   pinMode(RIGHT_FRONT_WHEEL_SET_SPEED, OUTPUT);
   pinMode(RIGHT_FRONT_WHEEL_DIR, OUTPUT);
