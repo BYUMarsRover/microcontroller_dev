@@ -48,6 +48,8 @@ const int RIGHT_FRONT_WHEEL_ACTUAL_SPEED = A13;
 const uint8_t SHOULDER_ADDRESS = 11;
 const uint8_t ELBOW_ADDRESS = 12;
 const uint8_t WRIST_ADDRESS = 13;
+const uint8_t TURRET_NANO_ADDRESS = 15;
+
 
 const int LEFT_HAND_PWM = 9;
 const int RIGHT_HAND_PWM = 10;
