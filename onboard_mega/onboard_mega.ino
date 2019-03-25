@@ -18,7 +18,7 @@ void setup() {
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-//  Serial.begin(9600);
+  Serial.begin(9600);
 //  arm.init_turret();
   delay(500);
   digitalWrite(POWER_INDICATOR, HIGH); // so we can tell the Mega is powered from breakoutboard.
@@ -72,6 +72,7 @@ void requestHandler() {
 }
 
 void setWheelParams() {
+  Serial.println("set wheel params");
   if (Wire.available() == 12) { 
     for (int i = 0; i < NUM_WHEELS; i++) {
       wheels.wheelList[i].set_speed = Wire.read();
@@ -84,7 +85,7 @@ void setWheelParams() {
 }
 
 void setArmParams() {
-//  Serial.println("setArm");
+  Serial.println("setArm");
 //  Serial.println(Wire.available());
   if (Wire.available() == 10) {
     arm.turret_high = Wire.read();
