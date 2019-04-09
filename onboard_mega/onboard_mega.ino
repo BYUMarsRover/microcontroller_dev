@@ -21,22 +21,25 @@ void setup() {
 //  Serial.begin(9600);
 //  arm.init_turret();
   delay(500);
+  wheels.updateFeedbackData();
+  checkClearErrorStates();
   digitalWrite(POWER_INDICATOR, HIGH); // so we can tell the Mega is powered from breakoutboard.
 //  Serial.println("starting...");
+  
 }
 
 void loop() {
 //  arm.write_turret_params(); // turret actual angle is checked continually and compared to desired angle.
-//  if (write_arm_params) {
-//    arm.write_params();
-//    write_arm_params = false;
-//  }
+  if (write_arm_params) {
+    arm.write_params();
+    write_arm_params = false;
+  }
   if (writeWheelParams) {
     wheels.writeParams();
     writeWheelParams = false;
   }
 
-  checkClearErrorStates();
+  //checkClearErrorStates();
   wheels.updateFeedbackData();
 }
 
@@ -51,6 +54,7 @@ void checkClearErrorStates() {
 }
 
 void receiveHandler(int byteCount) {
+//  Serial.println("rec");
   switch(Wire.read()) {
     case 1: setWheelParams(); break;
     case 2: setArmParams(); break;

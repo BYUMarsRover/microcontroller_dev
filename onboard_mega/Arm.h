@@ -45,6 +45,7 @@ public:
   }
 
   void write_params() {
+    write_turret_params();
     write_shoulder_params();
     write_elbow_params();
     write_wrist_params();
@@ -61,8 +62,11 @@ public:
 
   
   void write_turret_params() {
-    
-    uint16_t desiredAngle = (turret_high << 8) | turret_low;
+    Wire.beginTransmission(TURRET_ADDRESS);
+    Wire.write(turret_high);
+    Wire.write(turret_low);
+    Wire.endTransmission();
+/*    uint16_t desiredAngle = (turret_high << 8) | turret_low;
 //    Serial.println(desiredAngle);
 //    desiredAngle = 230;
     // change desiredAngle to angle from 0-360
@@ -102,6 +106,7 @@ public:
       //send vibration to pilot
 //      delay(5000);
     }
+    */
   }
   
   void write_shoulder_params() {
@@ -123,8 +128,10 @@ public:
     } else {
       val += 2047;
     }
-    //Serial.println(val);
+//    Serial.println(wrist_speed);
     wrist.setTarget(val);
+    //wrist.setTargetLowResFwd(wrist_speed);
+//    Serial.println(val);
   }
 
 //  #define LEFT_HAND_PWM 9

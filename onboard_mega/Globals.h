@@ -61,4 +61,6 @@ const int ARM_TURRET_FB = A14;
 
 const int POWER_INDICATOR = 13;
 
+const int TURRET_ADDRESS = 15;
+
 #endif
