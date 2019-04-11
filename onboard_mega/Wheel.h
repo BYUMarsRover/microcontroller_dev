@@ -19,6 +19,7 @@ public:
     this->error = false;
 
     this->is_right_side_wheel = true;
+    this->needs_enable = false;
   }
   
   void init(uint8_t set_speed_pin, uint8_t enable_pin, uint8_t dir_pin, uint8_t actual_speed_pin, uint8_t error_pin, bool is_right_side_wheel){
@@ -28,6 +29,7 @@ public:
     this->actual_speed_pin = actual_speed_pin;
     this->error_pin = error_pin;
     this->is_right_side_wheel = is_right_side_wheel;
+    this->needs_enable = false;
     
     digitalWrite(enable_pin, true);
   }
@@ -78,6 +80,7 @@ public:
   bool error;
 
   bool is_right_side_wheel;
+  bool needs_enable;
 };
 
 

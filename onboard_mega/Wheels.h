@@ -32,6 +32,22 @@ public:
     }
   }
 
+  void refresh() {
+    updateFeedbackData();
+    clear_errors();
+  }
+
+  void clear_errors() {
+    for (int i = 0; i < NUM_WHEELS; i++) {
+      if (wheelList[i].error) {
+        digitalWrite(wheelList[i].enable_pin, false);
+        delay(10);
+        digitalWrite(wheelList[i].enable_pin, true);
+        delay(10);
+      }
+    }
+  }
+
   Wheel wheelList[NUM_WHEELS];
 };
 

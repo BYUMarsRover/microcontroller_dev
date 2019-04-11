@@ -14,7 +14,7 @@ void setup() {
   Serial.begin(9600);
   setPinModes();
   init_i2c();
-  init_wheels();
+  wheels.refresh();
   digitalWrite(POWER_INDICATOR, HIGH);
 }
 
@@ -27,30 +27,13 @@ void loop() {
     wheels.writeParams();
     writeWheelParams = false;
   }
-  clear_error_states();
-  wheels.updateFeedbackData();
+  wheels.refresh();
 }
 
 void init_i2c() {
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-}
-
-void init_wheels() {
-  wheels.updateFeedbackData();
-  clear_error_states();
-}
-
-void clear_error_states() {
-  for (int i = 0; i < NUM_WHEELS; i++) {
-    if (wheels.wheelList[i].error) {
-      digitalWrite(wheels.wheelList[i].enable_pin, false);
-      delay(10);
-      digitalWrite(wheels.wheelList[i].enable_pin, true);
-      Serial.println("clearing error state");
-    }
-  }
 }
 
 void receiveHandler(int byteCount) {
@@ -75,7 +58,6 @@ void requestHandler() {
 }
 
 void setWheelParams() {
-  Serial.println("set wheel params");
   if (Wire.available() == NUM_WHEELS * 2) { 
     for (int i = 0; i < NUM_WHEELS; i++) {
       wheels.wheelList[i].set_speed = Wire.read();

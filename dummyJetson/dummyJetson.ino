@@ -6,7 +6,7 @@
 #include <Wire.h>
 
 const bool USE_POT = false;
-uint8_t set_speed = 125;
+uint8_t set_speed = 255;
 
 void setup() {
   pinMode(CONTROLLER, OUTPUT);
