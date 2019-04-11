@@ -1,143 +1,75 @@
 #include <Wire.h>
+#include "PD_SM.h"
+#include "VEL_SM.h"
 
-  enum state{STOP, CW, CCW} currState;
-  void state_machine_run();
-  void stop_turret();
-  void turret_cw();
-  void turret_ccw();
-  void motor_speed();
-  
-  byte turret_high=0;
-  byte turret_low=40;
+//define preambles to decide which state we are in
+#define ARM_PREAMBLE 2
+#define SCIENCE_PREAMBLE 3
 
-  uint16_t DesiredAngle;
-  float SensorValue;
-  int Speed = 40;                                   //sets speed for motor 127-0, 127 max speed, 0 min speed
-  float error;
-  float AngVelocity;
-  float PrevValue;
+#define MAX_TIME 2000
+#define PERIOD 50
 
-  const int kp=1;
-  const int kd=.717;
-  const int Max=60;
-  const int Min=30;
-  const int BUFFER = 3;                             // degrees in wiggle room BUFFER*2
-  const int ARM_TURRET_FB = A0;                     // Absolute Encoder pin
-  const int TURRET_ADDRESS = 15;
+static enum masterState{WAIT, POSITION, VELOCITY} currState;//master state for position or velocity control
+long prevTime = 0;//used to kill the turret if we don't receive a command within x seconds
+long tickCount = 0;
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin (9600);          
-  pinMode (13, OUTPUT);
+  pinMode (LED_BUILTIN, OUTPUT);
   Wire.begin(TURRET_ADDRESS);
-  Wire.onReceive(getTurretParams);
+  Wire.onReceive(onReceive);
   pinMode(ARM_TURRET_FB, INPUT);
+  prevTime = millis();
 
-  SensorValue = analogRead(ARM_TURRET_FB);          // gives number from 100-917 
-  SensorValue = SensorValue*.43-61.51;              // changes to number from 0-360 
-  PrevValue=SensorValue;
+  PD_init();
+  VEL_init();
+  masterSM_init();
 }  
   
 void loop() {
-  // put your main code here, to run repeatedly:
-  DesiredAngle = (turret_high << 8) | turret_low;    //reading in from I2C the desired angle
-  SensorValue = analogRead(ARM_TURRET_FB);          // gives number from 100-917 
-  SensorValue = SensorValue*.43-61.51;              // changes to number from 0-360 
-  error = DesiredAngle-SensorValue;                 // error will determine needed speed for motor
-  AngVelocity= (SensorValue-PrevValue)/2;           // used in Speed calculation
-  PrevValue=SensorValue;
-  state_machine_run();
-  delay(50);
-}
-
-void motor_speed()
-{
-  Speed=error*kp-AngVelocity*kd;
-  if (Speed > Max)
-  {
-    Speed=Max;
-  }
-  else if (Speed < Min)
-  {
-    Speed = Min;
+  if (millis() >= tickCount+PERIOD) {//tick the SM every <period> milli seconds
+    masterSM_tick();
+    tickCount = millis();
   }
 }
 
-void state_machine_run()
-{
-  switch(currState)
-  {
-    case STOP:
-      if (error < -BUFFER) 
-      {                  
-      turret_cw();
-      currState=CW;
-      digitalWrite(13,HIGH);
-      }
-      else if (error > BUFFER)
-      {
-      turret_ccw(); 
-      currState=CCW;
-      digitalWrite(13,HIGH);
-      }
-    break;
-    
-    case CW:
-      if (error > -BUFFER) 
-      {
+void masterSM_init() {
+  currState = WAIT;
+}
+
+void masterSM_tick() {
+  if (currState == POSITION) {
+    PD_tick();
+  }
+  else if (currState == VELOCITY) {
+    if (millis() < prevTime+MAX_TIME) {//only tick if we've received a message recently
+     VEL_tick(); 
+    }
+    else {//otherwise stop the turret
       stop_turret();
-      currState=STOP;
-      digitalWrite(13,LOW);
-      }
-      else
-      {
-      turret_cw();
-      }
-    break;
-    
-    case CCW:
-      if (error < BUFFER)
-      {
-      stop_turret();
-      currState=STOP;
-      digitalWrite(13,LOW);
-      } 
-      else
-      {
-      turret_ccw();
-      }
-    break;
+    }
   }
 }
   
-void stop_turret()
+void onReceive(int howMany) 
 {
-  Serial.write(0xFF); 
-}
-  
-void turret_ccw()
-{
-  //turn the clock-wise 
-  motor_speed();
-  unsigned char turnCCW[] = {0xE0, Speed};              
-  Serial.write(turnCCW, sizeof(turnCCW));                // Might need to switch "CCW" and "CW" code depending on which way the motor is facing (right is current orientation)
-}
-  
-void turret_cw()
-{
-  motor_speed();
-  unsigned char turnCW[] = {0xE1,Speed};        // 0=stop, 127=fullspeed
-  Serial.write(turnCW, sizeof(turnCW));
-}
-  
-void getTurretParams(int howMany) 
-{
-  digitalWrite(13,HIGH);
-  if(Wire.available()>= 2) 
-  {
+  digitalWrite(LED_BUILTIN,HIGH);
+  byte preamble = Wire.read();
+  if (preamble == ARM_PREAMBLE) {//read two more bytes for turret position high and low
     turret_high = Wire.read();
     turret_low = Wire.read();
+    currState = POSITION;
   }
-  digitalWrite(13,LOW);
+  else if (preamble == SCIENCE_PREAMBLE) {//read one more byte for turret direction
+    direction = Wire.read();
+    currState = VELOCITY;
+    prevTime = millis();//save the last time we got a message for turret velocity
+  }
+  else {//flush wire
+    while(Wire.available()) {
+      Wire.read();
+    } 
+  }
+  digitalWrite(LED_BUILTIN,LOW);
 }
   
