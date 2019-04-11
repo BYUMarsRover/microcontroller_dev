@@ -11,7 +11,7 @@ bool writeWheelParams = true;
 bool write_arm_params = true;
 
 void setup() {
-  Serial.begin(9600);
+//  Serial.begin(9600);
   setPinModes();
   init_i2c();
   wheels.refresh();
@@ -19,10 +19,10 @@ void setup() {
 }
 
 void loop() {
-//  if (write_arm_params) {
-//    arm.write_params();
-//    write_arm_params = false;
-//  }
+  if (write_arm_params) {
+    arm.write_params();
+    write_arm_params = false;
+  }
   if (writeWheelParams) {
     wheels.writeParams();
     writeWheelParams = false;

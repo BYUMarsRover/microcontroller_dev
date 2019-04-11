@@ -6,7 +6,7 @@
 const int I2C_ADDRESS = 8;
 const int ESCON_RPM_RANGE_MIN = -6000;
 const int ESCON_RPM_RANGE_MAX = 6000;
-const int NUM_WHEELS = 1;
+const int NUM_WHEELS = 6;
 
 const int LEFT_FRONT_WHEEL_SET_SPEED = 2;
 const int LEFT_FRONT_WHEEL_ENABLE = 22;
