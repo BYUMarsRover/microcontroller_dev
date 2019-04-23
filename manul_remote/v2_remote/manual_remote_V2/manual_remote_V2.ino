@@ -48,7 +48,7 @@ WheelParams wheelParams;
 
 void setup() {
   Wire.begin();
-  Serial.begin(9600);
+//  Serial.begin(9600);
   pinMode(RIGHT_FORWARD_SWITCH, INPUT);
   pinMode(RIGHT_BACK_SWITCH, INPUT);
   pinMode(LEFT_FORWARD_SWITCH, INPUT);

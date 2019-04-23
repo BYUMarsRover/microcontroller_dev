@@ -18,18 +18,12 @@ void setup() {
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-//  Serial.begin(9600);
-//  arm.init_turret();
-  delay(500);
   wheels.updateFeedbackData();
   checkClearErrorStates();
-  digitalWrite(POWER_INDICATOR, HIGH); // so we can tell the Mega is powered from breakoutboard.
-//  Serial.println("starting...");
-  
+  digitalWrite(POWER_INDICATOR, HIGH);
 }
 
 void loop() {
-//  arm.write_turret_params(); // turret actual angle is checked continually and compared to desired angle.
   if (write_arm_params) {
     arm.write_params();
     write_arm_params = false;
@@ -38,8 +32,7 @@ void loop() {
     wheels.writeParams();
     writeWheelParams = false;
   }
-
-  //checkClearErrorStates();
+  checkClearErrorStates();
   wheels.updateFeedbackData();
 }
 
@@ -47,14 +40,20 @@ void checkClearErrorStates() {
   for (int i = 0; i < NUM_WHEELS; i++) {
     if (wheels.wheelList[i].error) {
       digitalWrite(wheels.wheelList[i].enable_pin, false);
-      delay(10);
+      int delay_counter = 0;
+      for (int i = 0; i < 100000; i++) {
+        delay_counter++;
+      }
       digitalWrite(wheels.wheelList[i].enable_pin, true);
+      delay_counter = 0;
+      for (int i = 0; i < 100000; i++) {
+        delay_counter++;
+      }
     }
   }
 }
 
 void receiveHandler(int byteCount) {
-//  Serial.println("rec");
   switch(Wire.read()) {
     case 1: setWheelParams(); break;
     case 2: setArmParams(); break;
@@ -70,7 +69,6 @@ void flushWire() {
 
 void requestHandler() {
   for (int i = 0; i < NUM_WHEELS; i++) {
-//    Wire.write((uint8_t*)&wheels.wheelList[i].actual_speed, 2);
     Wire.write(wheels.wheelList[i].actual_speed);
     Wire.write(wheels.wheelList[i].error);
   }
@@ -86,11 +84,10 @@ void setWheelParams() {
   } else {
     flushWire();
   }
+  //wheels.printVals();
 }
 
 void setArmParams() {
-//  Serial.println("setArm");
-//  Serial.println(Wire.available());
   if (Wire.available() == 10) {
     arm.turret_high = Wire.read();
     arm.turret_low = Wire.read();
@@ -103,10 +100,8 @@ void setArmParams() {
     arm.hand_speed = Wire.read();
     arm.hand_dir = Wire.read();
     write_arm_params = true; 
-//    arm.printVals();
   }
   else {
-    //maybe notify someone that this failed????
     flushWire();
   }
 }

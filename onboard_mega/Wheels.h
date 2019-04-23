@@ -20,6 +20,18 @@ public:
   
   ~Wheels(){}
 
+  void printVals() {
+    for (int i = 0; i < NUM_WHEELS; i++) {
+      Serial.print(i);
+      Serial.print(". set_speed: ");
+      Serial.println(wheelList[i].set_speed);
+      
+      Serial.print("\tdir: ");
+      Serial.println(wheelList[i].dir);
+    }
+    Serial.println("");
+  }
+
   void updateFeedbackData() {
     for (int i = 0; i < NUM_WHEELS; i++) {
       wheelList[i].updateFeedbackData();
