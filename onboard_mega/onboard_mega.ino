@@ -8,6 +8,7 @@
 using namespace std;
 
 Wheels wheels;
+
 Arm arm;
 bool writeWheelParams = true;
 bool write_arm_params = true;
@@ -40,15 +41,9 @@ void checkClearErrorStates() {
   for (int i = 0; i < NUM_WHEELS; i++) {
     if (wheels.wheelList[i].error) {
       digitalWrite(wheels.wheelList[i].enable_pin, false);
-      int delay_counter = 0;
-      for (int i = 0; i < 100000; i++) {
-        delay_counter++;
-      }
+      delay(10);
       digitalWrite(wheels.wheelList[i].enable_pin, true);
-      delay_counter = 0;
-      for (int i = 0; i < 100000; i++) {
-        delay_counter++;
-      }
+      delay(10);
     }
   }
 }
