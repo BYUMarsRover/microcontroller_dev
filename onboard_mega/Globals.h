@@ -55,6 +55,7 @@ const int LEFT_HAND_LN_A = 40;
 const int LEFT_HAND_LN_B = 41;
 const int RIGHT_HAND_LN_A = 42;
 const int RIGHT_HAND_LN_B = 43;
+const int JETSON_POWER_ON 44;
 
 const int ARM_TURRET = 8;
 const int ARM_TURRET_FB = A14;

@@ -22,6 +22,9 @@ void setup() {
   wheels.updateFeedbackData();
   checkClearErrorStates();
   digitalWrite(POWER_INDICATOR, HIGH);
+
+  delay(2000);
+  powerJetson();//turn on the jetson
 }
 
 void loop() {
@@ -101,6 +104,12 @@ void setArmParams() {
   }
 }
 
+//Warning: this function is blocking 
+void powerJetson() {
+  digitalWrite(JETSON_POWER_ON, HIGH);
+  delay(40);
+  digitalWrite(JETSON_POWER_ON,LOW);
+}
 
 void setPinModes() {
   pinMode(POWER_INDICATOR, OUTPUT);
@@ -135,4 +144,6 @@ void setPinModes() {
   pinMode(LEFT_REAR_WHEEL_DIR, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_ENABLE, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);
+
+  pinMode(JETSON_POWER_ON, OUTPUT);
 }
