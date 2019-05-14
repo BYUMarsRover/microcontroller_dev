@@ -20,11 +20,11 @@ void setup() {
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
   wheels.updateFeedbackData();
-  checkClearErrorStates();
+  checkClearErrorStates();  
+  
+  arm.fingerSM_init();  
+  powerJetson();//turn on the jetson  
   digitalWrite(POWER_INDICATOR, HIGH);
-
-  delay(2000);
-  powerJetson();//turn on the jetson
 }
 
 void loop() {
@@ -38,6 +38,7 @@ void loop() {
   }
   checkClearErrorStates();
   wheels.updateFeedbackData();
+  arm.fingerSM_tick();  
 }
 
 void checkClearErrorStates() {
@@ -81,12 +82,11 @@ void setWheelParams() {
     writeWheelParams = true;
   } else {
     flushWire();
-  }
-  //wheels.printVals();
+  }  
 }
 
 void setArmParams() {
-  if (Wire.available() == 10) {
+  if (Wire.available() == 11) {
     arm.turret_high = Wire.read();
     arm.turret_low = Wire.read();
     arm.shoulder_high = Wire.read();
@@ -97,6 +97,7 @@ void setArmParams() {
     arm.wrist_dir = Wire.read();
     arm.hand_speed = Wire.read();
     arm.hand_dir = Wire.read();
+    arm.finger_enable = Wire.read();
     write_arm_params = true; 
   }
   else {
@@ -112,9 +113,12 @@ void powerJetson() {
 }
 
 void setPinModes() {
+  //misc
   pinMode(POWER_INDICATOR, OUTPUT);
   pinMode(ARM_TURRET, OUTPUT);
-  
+  pinMode(JETSON_POWER_ON, OUTPUT);
+
+  //wheels
   pinMode(RIGHT_FRONT_WHEEL_SET_SPEED, OUTPUT);
   pinMode(RIGHT_FRONT_WHEEL_DIR, OUTPUT);
   pinMode(RIGHT_FRONT_WHEEL_ENABLE, OUTPUT);
@@ -143,7 +147,14 @@ void setPinModes() {
   pinMode(LEFT_REAR_WHEEL_SET_SPEED, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_DIR, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_ENABLE, OUTPUT);
-  pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);
+  pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);  
 
-  pinMode(JETSON_POWER_ON, OUTPUT);
+  //arm
+  pinMode(LEFT_HAND_PWM, OUTPUT);
+  pinMode(LEFT_HAND_LN_B, OUTPUT);
+  pinMode(LEFT_HAND_LN_A, OUTPUT);
+
+  pinMode(FINGER_PWM, OUTPUT);
+  pinMode(FINGER_LN_A, OUTPUT);
+  pinMode(FINGER_LN_B, OUTPUT);
 }

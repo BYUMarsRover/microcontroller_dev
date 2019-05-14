@@ -49,13 +49,20 @@ const uint8_t SHOULDER_ADDRESS = 11;
 const uint8_t ELBOW_ADDRESS = 12;
 const uint8_t WRIST_ADDRESS = 13;
 
-const int LEFT_HAND_PWM = 9;
-const int RIGHT_HAND_PWM = 10;
-const int LEFT_HAND_LN_A = 40;
-const int LEFT_HAND_LN_B = 41;
-const int RIGHT_HAND_LN_A = 42;
-const int RIGHT_HAND_LN_B = 43;
-const int JETSON_POWER_ON 44;
+//hand h-bridge pins
+const int LEFT_HAND_PWM = 10;
+const int LEFT_HAND_LN_B = 43;
+const int LEFT_HAND_LN_A = 42;
+
+//finger h-bridge pins
+//const int RIGHT_HAND_PWM = 10;
+//const int RIGHT_HAND_LN_A = 42;
+//const int RIGHT_HAND_LN_B = 43;
+const int FINGER_PWM = 9;
+const int FINGER_LN_A = 40;
+const int FINGER_LN_B = 41;
+
+const int JETSON_POWER_ON = 44;
 
 const int ARM_TURRET = 8;
 const int ARM_TURRET_FB = A14;
