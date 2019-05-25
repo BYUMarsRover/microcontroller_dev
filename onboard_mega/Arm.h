@@ -83,13 +83,12 @@ public:
   }
 
   void write_hand_params() {
-    digitalWrite(LEFT_HAND_LN_A, hand_dir);
-    digitalWrite(LEFT_HAND_LN_B, !hand_dir);
-    //digitalWrite(RIGHT_HAND_LN_A, hand_dir);
-    //digitalWrite(RIGHT_HAND_LN_B, !hand_dir);
+    //set direction
+    digitalWrite(HAND_LN_A, hand_dir);
+    digitalWrite(HAND_LN_B, !hand_dir);
 
-    analogWrite(LEFT_HAND_PWM, hand_speed);
-    //analogWrite(RIGHT_HAND_PWM, hand_speed);
+    //set speed
+    analogWrite(HAND_PWM, hand_speed);
   }
 
   

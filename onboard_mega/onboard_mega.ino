@@ -150,9 +150,9 @@ void setPinModes() {
   pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);  
 
   //arm
-  pinMode(LEFT_HAND_PWM, OUTPUT);
-  pinMode(LEFT_HAND_LN_B, OUTPUT);
-  pinMode(LEFT_HAND_LN_A, OUTPUT);
+  pinMode(HAND_PWM, OUTPUT);
+  pinMode(HAND_LN_B, OUTPUT);
+  pinMode(HAND_LN_A, OUTPUT);
 
   pinMode(FINGER_PWM, OUTPUT);
   pinMode(FINGER_LN_A, OUTPUT);
