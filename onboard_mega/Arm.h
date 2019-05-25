@@ -7,6 +7,11 @@
 #define IN HIGH
 #define OUT LOW
 
+#define MAX_ELBOW 2469
+#define MIN_ELBOW 0
+#define MAX_SHOULDER 2965
+#define MIN_SHOULDER 0
+
 JrkG2I2C shoulder(SHOULDER_ADDRESS);
 JrkG2I2C elbow(ELBOW_ADDRESS);
 JrkG2I2C wrist(WRIST_ADDRESS);
@@ -64,11 +69,23 @@ public:
   
   void write_shoulder_params() {
     uint16_t val = (shoulder_high << 8) | shoulder_low;
+    if (val > MAX_SHOULDER) {
+      val = MAX_SHOULDER;
+    }
+    else if (val < MIN_SHOULDER) {
+      val = MIN_SHOULDER;
+    }
     shoulder.setTarget(val);
   }
   
   void write_elbow_params() {
     uint16_t val = (elbow_high << 8) | elbow_low;
+    if (val > MAX_ELBOW) {
+      val = MAX_ELBOW;
+    }
+    else if (val < MIN_ELBOW) {
+      val = MIN_ELBOW;
+    }
     elbow.setTarget(val);
   }
 
@@ -102,7 +119,7 @@ public:
   }
 
   void fingerSM_init() {
-    fingerState = wait;
+    fingerState = runningIn;
     fingerCounter = 0;
   }
 
