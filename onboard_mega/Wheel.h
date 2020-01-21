@@ -12,6 +12,8 @@ public:
     this->dir_pin = 0;
     this->actual_speed_pin = 0;
     this->error_pin = 0;
+    this->acceleration_pin = 0;
+    this->deceleration_pin = 0;
     
     this->set_speed = 0;
     this->actual_speed = 0;
@@ -21,12 +23,14 @@ public:
     this->is_right_side_wheel = true;
   }
   
-  void init(uint8_t set_speed_pin, uint8_t enable_pin, uint8_t dir_pin, uint8_t actual_speed_pin, uint8_t error_pin, bool is_right_side_wheel){
+  void init(uint8_t set_speed_pin, uint8_t enable_pin, uint8_t dir_pin, uint8_t actual_speed_pin, uint8_t error_pin, uint8_t acceleration_pin, uint8_t deceleration_pin, bool is_right_side_wheel){
     this->set_speed_pin = set_speed_pin;
     this->enable_pin = enable_pin;
     this->dir_pin = dir_pin;
     this->actual_speed_pin = actual_speed_pin;
     this->error_pin = error_pin;
+    this->acceleration_pin = acceleration_pin;
+    this->deceleration_pin = deceleration_pin;
     this->is_right_side_wheel = is_right_side_wheel;
     
     digitalWrite(enable_pin, true);
@@ -63,6 +67,8 @@ public:
     */
     analogWrite(set_speed_pin, map(set_speed,0,255,(255 * .1),(255 * .9)));
     digitalWrite(dir_pin, is_right_side_wheel == dir);
+    analogWrite(acceleration_pin, acceleration);
+    analogWrite(deceleration_pin, deceleration);
   }
 
   uint8_t set_speed_pin;
@@ -70,7 +76,11 @@ public:
   uint8_t enable_pin;
   uint8_t actual_speed_pin;
   uint8_t error_pin;
+  uint8_t acceleration_pin;
+  uint8_t deceleration_pin;
   
+  byte acceleration;
+  byte deceleration;
   byte set_speed;
   byte actual_speed;
   

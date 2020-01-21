@@ -11,7 +11,7 @@ const int RIGHT_BACK_SWITCH = 5;
 const int LEFT_FORWARD_SWITCH = 4;
 const int LEFT_BACK_SWITCH = 3;
 const int SLOW_MODE_SWITCH = 6;
-const int HIGH_SPEED = 180;
+const int HIGH_SPEED = 255; //180 normally
 const int LOW_SPEED = 115;
 
 class WheelParams {
@@ -126,6 +126,21 @@ void setWheelsSpeed(const char& side, const int& speed_) {
   }; break;
   }
 }
+
+//void setWheelsSpeed(const char& side, const int& speed_) {
+//  switch (side) {
+//  case 'l' :  {
+//    wheelParams.leftFrontSpeed = speed_;
+//    wheelParams.leftMiddleSpeed = 0;
+//    wheelParams.leftBackSpeed = 0;
+//  }; break;
+//  case 'r' : {
+//    wheelParams.rightFrontSpeed = 0;
+//    wheelParams.rightMiddleSpeed = 0;
+//    wheelParams.rightBackSpeed = 0;
+//  }; break;
+//  }
+//}
 
 void setWheelsDir(const char& side, const int& dir) {
   switch (side) {

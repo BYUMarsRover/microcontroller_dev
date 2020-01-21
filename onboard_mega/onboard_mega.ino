@@ -3,13 +3,13 @@
 #include <Wire.h>
 #include "Globals.h"
 #include "Wheels.h"
-#include "Arm.h"
+//#include "Arm.h"
 
 using namespace std;
 
 Wheels wheels;
 
-Arm arm;
+//Arm arm;
 bool writeWheelParams = true;
 bool write_arm_params = true;
 bool receivedi2c = false; 
@@ -20,25 +20,25 @@ void setup() {
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
   wheels.updateFeedbackData();
-  checkClearErrorStates();  
+//  checkClearErrorStates();  
   
-  arm.fingerSM_init();  
-  powerJetson();//turn on the jetson  
+//  arm.fingerSM_init();  
+//  powerJetson();//turn on the jetson  
   digitalWrite(POWER_INDICATOR, HIGH);
 }
 
 void loop() {
-  if (write_arm_params) {
-    arm.write_params();
-    write_arm_params = false;
-  }
+//  if (write_arm_params) {
+//    arm.write_params();
+//    write_arm_params = false;
+//  }
   if (writeWheelParams) {
     wheels.writeParams();
     writeWheelParams = false;
   }
   checkClearErrorStates();
   wheels.updateFeedbackData();
-  arm.fingerSM_tick();  
+//  arm.fingerSM_tick();  
 }
 
 void checkClearErrorStates() {
@@ -55,7 +55,7 @@ void checkClearErrorStates() {
 void receiveHandler(int byteCount) {
   switch(Wire.read()) {
     case 1: setWheelParams(); break;
-    case 2: setArmParams(); break;
+//    case 2: setArmParams(); break;
     default: flushWire(); break;
   }
 }
@@ -74,10 +74,12 @@ void requestHandler() {
 }
 
 void setWheelParams() {
-  if (Wire.available() == 12) { 
+  if (Wire.available() == 24) { 
     for (int i = 0; i < NUM_WHEELS; i++) {
       wheels.wheelList[i].set_speed = Wire.read();
       wheels.wheelList[i].dir = Wire.read();
+      wheels.wheelList[i].acceleration = Wire.read();
+      wheels.wheelList[i].deceleration = Wire.read();
     }
     writeWheelParams = true;
   } else {
@@ -85,38 +87,38 @@ void setWheelParams() {
   }  
 }
 
-void setArmParams() {
-  if (Wire.available() == 11) {
-    arm.turret_high = Wire.read();
-    arm.turret_low = Wire.read();
-    arm.shoulder_high = Wire.read();
-    arm.shoulder_low = Wire.read();
-    arm.elbow_high = Wire.read();
-    arm.elbow_low = Wire.read();
-    arm.wrist_speed = Wire.read();
-    arm.wrist_dir = Wire.read();
-    arm.hand_speed = Wire.read();
-    arm.hand_dir = Wire.read();
-    arm.finger_enable = Wire.read();
-    write_arm_params = true; 
-  }
-  else {
-    flushWire();
-  }
-}
+//void setArmParams() {
+//  if (Wire.available() == 11) {
+//    arm.turret_high = Wire.read();
+//    arm.turret_low = Wire.read();
+//    arm.shoulder_high = Wire.read();
+//    arm.shoulder_low = Wire.read();
+//    arm.elbow_high = Wire.read();
+//    arm.elbow_low = Wire.read();
+//    arm.wrist_speed = Wire.read();
+//    arm.wrist_dir = Wire.read();
+//    arm.hand_speed = Wire.read();
+//    arm.hand_dir = Wire.read();
+//    arm.finger_enable = Wire.read();
+//    write_arm_params = true; 
+//  }
+//  else {
+//    flushWire();
+//  }
+//}
 
 //Warning: this function is blocking 
-void powerJetson() {
-  digitalWrite(JETSON_POWER_ON, HIGH);
-  delay(40);
-  digitalWrite(JETSON_POWER_ON,LOW);
-}
+//void powerJetson() {
+//  digitalWrite(JETSON_POWER_ON, HIGH);
+//  delay(40);
+//  digitalWrite(JETSON_POWER_ON,LOW);
+//}
 
 void setPinModes() {
   //misc
   pinMode(POWER_INDICATOR, OUTPUT);
-  pinMode(ARM_TURRET, OUTPUT);
-  pinMode(JETSON_POWER_ON, OUTPUT);
+//  pinMode(ARM_TURRET, OUTPUT);
+//  pinMode(JETSON_POWER_ON, OUTPUT);
 
   //wheels
   pinMode(RIGHT_FRONT_WHEEL_SET_SPEED, OUTPUT);
@@ -150,11 +152,11 @@ void setPinModes() {
   pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);  
 
   //arm
-  pinMode(HAND_PWM, OUTPUT);
-  pinMode(HAND_LN_B, OUTPUT);
-  pinMode(HAND_LN_A, OUTPUT);
-
-  pinMode(FINGER_PWM, OUTPUT);
-  pinMode(FINGER_LN_A, OUTPUT);
-  pinMode(FINGER_LN_B, OUTPUT);
+//  pinMode(HAND_PWM, OUTPUT);
+//  pinMode(HAND_LN_B, OUTPUT);
+//  pinMode(HAND_LN_A, OUTPUT);
+//
+//  pinMode(FINGER_PWM, OUTPUT);
+//  pinMode(FINGER_LN_A, OUTPUT);
+//  pinMode(FINGER_LN_B, OUTPUT);
 }
