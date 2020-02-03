@@ -143,7 +143,7 @@ void setWheelsDir(const char& side, const int& dir) {
 }
 
 void writeParams() {
-  Wire.beginTransmission(8);
+  Wire.beginTransmission(10);
   Wire.write(1);
   Wire.write(wheelParams.leftFrontSpeed);
   Wire.write(wheelParams.leftFrontDir);
