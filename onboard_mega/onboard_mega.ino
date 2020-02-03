@@ -3,42 +3,33 @@
 #include <Wire.h>
 #include "Globals.h"
 #include "Wheels.h"
-#include "Arm.h"
+//#include "Arm.h"
 
 using namespace std;
 
 Wheels wheels;
 
-Arm arm;
 bool writeWheelParams = true;
-bool write_arm_params = true;
-bool receivedi2c = false; 
 
 void setup() {
   setPinModes();
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(receiveHandler);
   Wire.onRequest(requestHandler);
-  wheels.updateFeedbackData();
-  checkClearErrorStates();  
+//  wheels.updateFeedbackData();
+//  checkClearErrorStates();  
   
-  arm.fingerSM_init();  
-  powerJetson();//turn on the jetson  
+//  powerJetso/n();//turn on the jetson  
   digitalWrite(POWER_INDICATOR, HIGH);
 }
 
 void loop() {
-  if (write_arm_params) {
-    arm.write_params();
-    write_arm_params = false;
-  }
   if (writeWheelParams) {
     wheels.writeParams();
     writeWheelParams = false;
   }
   checkClearErrorStates();
-  wheels.updateFeedbackData();
-  arm.fingerSM_tick();  
+//  wheels.updateFeedbackData();
 }
 
 void checkClearErrorStates() {
@@ -55,7 +46,6 @@ void checkClearErrorStates() {
 void receiveHandler(int byteCount) {
   switch(Wire.read()) {
     case 1: setWheelParams(); break;
-    case 2: setArmParams(); break;
     default: flushWire(); break;
   }
 }
@@ -85,38 +75,18 @@ void setWheelParams() {
   }  
 }
 
-void setArmParams() {
-  if (Wire.available() == 11) {
-    arm.turret_high = Wire.read();
-    arm.turret_low = Wire.read();
-    arm.shoulder_high = Wire.read();
-    arm.shoulder_low = Wire.read();
-    arm.elbow_high = Wire.read();
-    arm.elbow_low = Wire.read();
-    arm.wrist_speed = Wire.read();
-    arm.wrist_dir = Wire.read();
-    arm.hand_speed = Wire.read();
-    arm.hand_dir = Wire.read();
-    arm.finger_enable = Wire.read();
-    write_arm_params = true; 
-  }
-  else {
-    flushWire();
-  }
-}
-
 //Warning: this function is blocking 
-void powerJetson() {
-  digitalWrite(JETSON_POWER_ON, HIGH);
-  delay(40);
-  digitalWrite(JETSON_POWER_ON,LOW);
-}
+//void powerJetson() {
+//  digitalWrite(JETSON_POWER_ON, HIGH);
+//  delay(40);
+//  digitalWrite(JETSON_POWER_ON,LOW);
+//}
+
 
 void setPinModes() {
   //misc
   pinMode(POWER_INDICATOR, OUTPUT);
-  pinMode(ARM_TURRET, OUTPUT);
-  pinMode(JETSON_POWER_ON, OUTPUT);
+//  pinMode(JETSON_POWER_ON, OUTPUT);
 
   //wheels
   pinMode(RIGHT_FRONT_WHEEL_SET_SPEED, OUTPUT);
@@ -148,13 +118,4 @@ void setPinModes() {
   pinMode(LEFT_REAR_WHEEL_DIR, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_ENABLE, OUTPUT);
   pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);  
-
-  //arm
-  pinMode(HAND_PWM, OUTPUT);
-  pinMode(HAND_LN_B, OUTPUT);
-  pinMode(HAND_LN_A, OUTPUT);
-
-  pinMode(FINGER_PWM, OUTPUT);
-  pinMode(FINGER_LN_A, OUTPUT);
-  pinMode(FINGER_LN_B, OUTPUT);
 }
