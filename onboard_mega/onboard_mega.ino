@@ -10,11 +10,7 @@
     runs into errors during operation, so that it can "ignore" the issue that 
     triggered the error state and keep working. The issue is exactly that, this
     code constantly ignores error states which unavoidably takes a toll on the 
-    motors' propper functioning over time. 
-
-    Created: Nov 12 2020
-    Last Update: Feb 2 2021
-    Author: Sebastian Zapata
+    motors' propper functioning over time.
 */
 
 #include "Globals.h"
