@@ -96,6 +96,10 @@ void timeout_check() {
                 wheels.wheelList[i].set_speed = STOP_WHEELS;
                 wheels.wheelList[i].dir = STOP_WHEELS;
             }
+            
+            // Write the updates values (updated to zero) to the pins of the wheels
+            wheels.writeParams(); // Write the values of the wheels data members onto the arduino pins
+            
             // Send feedback
             send_feedback();
         }
