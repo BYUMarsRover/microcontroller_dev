@@ -4,8 +4,8 @@
 
 TicI2C tic;
 
-#define INA 2  // D2
-#define FLT 3   // D3
+#define FLT 2  // D2
+#define INA 3   // D3
 #define INB 4  // D4
 #define PWM 5   // D5
 int counter = 0;
