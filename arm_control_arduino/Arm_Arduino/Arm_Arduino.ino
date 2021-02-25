@@ -1,6 +1,4 @@
 #include <ros.h>
-
-#include <ros.h>
 #include <rover_msgs/GripperElevatorControl.h>
 #include <Tic.h>
 
@@ -42,7 +40,7 @@ void control_Callback(const rover_msgs::GripperElevatorControl& control_msg) {
       engage = false;
     } else {
       
-      tic.setTargetVelocity(control_msg.elevator * 100000);
+      tic.setTargetVelocity(control_msg.elevator * 2000000);
     }
   } else if ((engage == false) && (control_msg.elevator != 1)) {
 
