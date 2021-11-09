@@ -73,11 +73,28 @@ void read_bytes() {
     timeout_happened = false;
     last_checkpoint = millis();
 
-    // Read and store values on the wheels data members
-    for (int i = 0; i < NUM_WHEELS; i++) {
-        wheels.wheelList[i].set_speed = Serial.read();
-        wheels.wheelList[i].dir = Serial.read();
-    }
+    double left_wheel_input = Serial.read();
+    double right_wheel_input = Serial.read();
+    
+    bool left_wheel_dir = left_wheel_input > 0;
+    bool right_wheel_dir = right_wheel_input > 0;
+    double left_wheel_speed = fabs(left_wheel_input);
+    double right_wheel_speed = fabs(right_wheel_input);
+
+    wheels.wheelList[0].set_speed = left_wheel_speed;
+    wheels.wheelList[0].dir = left_wheel_dir;
+    wheels.wheelList[1].set_speed = left_wheel_speed;
+    wheels.wheelList[1].dir = left_wheel_dir;
+    wheels.wheelList[2].set_speed = left_wheel_speed;
+    wheels.wheelList[2].dir = left_wheel_dir;
+
+    wheels.wheelList[3].set_speed = right_wheel_speed;
+    wheels.wheelList[3].dir = right_wheel_dir;
+    wheels.wheelList[4].set_speed = right_wheel_speed;
+    wheels.wheelList[4].dir = right_wheel_dir;
+    wheels.wheelList[5].set_speed = right_wheel_speed;
+    wheels.wheelList[5].dir = right_wheel_dir;
+    
 }
 
 // This method flushes whatever is in the input buffer
@@ -157,4 +174,3 @@ void set_pin_modes() {
     pinMode(LEFT_REAR_WHEEL_ENABLE, OUTPUT);
     pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);  
 }
-
