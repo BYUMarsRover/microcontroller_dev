@@ -73,13 +73,19 @@ void read_bytes() {
     timeout_happened = false;
     last_checkpoint = millis();
 
-    double left_wheel_input = Serial.read();
-    double right_wheel_input = Serial.read();
+    int left_wheel_input = Serial.read();
+    int right_wheel_input = Serial.read();
+
+    // Serial Library Requires all values to be between [0, 255], so we account for negative velocities in the range [-100, 100] by
+    // Adding 100 to the values prior to serial transfer and subtracting 100 here.
+    left_wheel_input -= 100;
+    right_wheel_input -= 100;
     
-    bool left_wheel_dir = left_wheel_input > 0;
-    bool right_wheel_dir = right_wheel_input > 0;
-    double left_wheel_speed = fabs(left_wheel_input);
-    double right_wheel_speed = fabs(right_wheel_input);
+    bool left_wheel_dir = left_wheel_input >= 0;
+    bool right_wheel_dir = right_wheel_input >= 0;
+
+    int left_wheel_speed = abs(left_wheel_input);
+    int right_wheel_speed = abs(right_wheel_input);
 
     wheels.wheelList[0].set_speed = left_wheel_speed;
     wheels.wheelList[0].dir = left_wheel_dir;

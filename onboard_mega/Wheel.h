@@ -63,9 +63,9 @@ public:
     */
 //    analogWrite(set_speed_pin, map(set_speed,0,255,(255 * .1),(255 * .9)));
 
-    // Set Speed is a value between 0 and 1. Map takes a long, so convert it to a long and then map it between 10% and 90%
+    // Set Speed is a value between 0 and 100. Map takes a long, so convert it to a long and then map it between 10% and 90%
     
-    analogWrite(set_speed_pin, map((long)(set_speed*255), 0, 255, (255 * .1), (255 * .9)));
+    analogWrite(set_speed_pin, map(set_speed, 0, 100, (long)(255 * .1), (long)(255 * .9)));
     digitalWrite(dir_pin, is_right_side_wheel == dir);
   }
 
