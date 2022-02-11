@@ -1,3 +1,4 @@
+
 #ifndef ARM_ARDUINO_INO
 #define ARM_ARDUINO_INO
 
@@ -29,65 +30,14 @@ TicI2C tic;
 #define STATUS_INDICATOR_PREAMBLE  0x1
 #define STATUS_INDICATOR_COUNTER_MAX 250
 
-//void control_Callback(const rover_msgs::bat_stat_grip_elev_arduino& control_msg);
-
 int battCounter = 0;
 int statCounter = 0;
 bool engage = false;
-//ros::NodeHandle_<ArduinoHardware, 2, 1, 160, 210> node_handle;
-//rover_msgs::bat_stat_grip_elev_arduino control_msg;
-//ros::Subscriber<rover_msgs::bat_stat_grip_elev_arduino> control_subscriber("stat_grip_elev_arduino_cmd", &control_Callback);
+
 // Define the array of leds
 CRGB leds[STATUS_INDICATOR_NUM_LEDS];
-enum led_mode_states {AUTONOMOUS, ARRIVAL, TELEOPERATION, IDLE};
+enum led_mode_states {AUTONOMOUS, TELEOPERATION, ARRIVAL, IDLE};
 led_mode_states led_mode;
-
-
-
-//
-//void control_Callback(const rover_msgs::bat_stat_grip_elev_arduino& control_msg) {
-//  
-//  if (control_msg.navigation_state != 1) {
-//    led_mode = static_cast<led_mode_states>(control_msg.navigation_state);
-//  }
-//
-//  if (control_msg.gripper == 0) {
-//
-//    analogWrite(PWM, 0);
-//  } else if (control_msg.gripper > 0) {
-//
-//    digitalWrite(INA, HIGH);
-//    digitalWrite(INB, LOW);
-//    analogWrite(PWM, control_msg.gripper);
-//  } else if (control_msg.gripper < 0) {
-//
-//    digitalWrite(INA, LOW);
-//    digitalWrite(INB, HIGH);
-//    analogWrite(PWM, -255 - control_msg.gripper);
-//  }
-//  
-//  if (engage == true) {
-//
-//    if (control_msg.elevator == 12) {
-//      
-//      tic.deenergize();
-//      engage = false;
-//    } else {
-//      
-//      tic.setTargetVelocity(control_msg.elevator * 2000000);
-//    }
-//  } else if ((engage == false) && (control_msg.elevator != 1)) {
-//
-//    engage = true;
-//    // Set up I2C.
-//    Wire.begin();
-//    // Give the Tic some time to start up.
-//    delay(20);
-//    tic.exitSafeStart();
-//    tic.setTargetVelocity(0);
-//    tic.energize();
-//  }
-//}
 
 // Sends a "Reset command timeout" command to the Tic.  We must
 // call this at least once per second, or else a command timeout
@@ -111,33 +61,6 @@ void delayWhileResettingCommandTimeout(uint32_t ms)
   } while ((uint32_t)(millis() - start) <= ms);
 }
 
-//// Arduino specific - called when data is available
-//void serialEvent()
-//{
-//  // Indicator Code
-//  readSerialData();
-
-//}
-
-// //TODO: REPLACE WITH ROSTOPICS
-// void readSerialData()
-//     {
-//         unsigned int data_array[2];
-//         int index = 0;
-//         while(Serial.available())    // slave may send less than requested
-//         {
-//             unsigned int c = Serial.read();    // receive a byte as character
-//             if (index >=2){
-//             index = 1;
-//             }
-//             data_array[index++] = c;
-//         }
-//         if (index == 2)
-//         {
-//             led_mode = static_cast<led_mode_states>(data_array[1]);
-//         }
-//     }
-
 void setArrayColor(char red, char green, char blue)
     {
         for (int x=0;x<STATUS_INDICATOR_NUM_LEDS;x++)
@@ -151,12 +74,6 @@ void setup()
 {
   // Arduino_rover_status setup
   Serial.begin(9600);
-
-  // indicator = StatusIndicator();
-  // indicator.setup();
-  // battery_monitor = BatteryMonitor();
-  // battery_monitor.setup();
-
 
   // !! Set pin functionality
 
@@ -212,23 +129,26 @@ void setup()
 
 void statusIndicatorTick()
     {
-        if (led_mode == AUTONOMOUS)
+        if (led_mode == AUTONOMOUS) {
             setArrayColor(255,0,0);
+        }
         else if (led_mode == ARRIVAL)
         {
-            if (statCounter == STATUS_INDICATOR_COUNTER_MAX/2)
+            if (statCounter == STATUS_INDICATOR_COUNTER_MAX/2) {
                 // Need to flash if in arrival state
                 setArrayColor(0,255,0);
+            }
             else if (statCounter == STATUS_INDICATOR_COUNTER_MAX){
                 setArrayColor(0,0,0);
-                statCounter = 0;
             }
             statCounter++;
         }
-        else if (led_mode == TELEOPERATION)
+        else if (led_mode == TELEOPERATION) {
             setArrayColor(0,0,255);
-        else
+        }
+        else {
             setArrayColor(0,0,0);
+        }
     }
 
 void batteryTick()
@@ -304,7 +224,7 @@ void decoder()
         gripper++;
         int gripper_int = atoi(gripper);
         int elevator_int = atoi(delimiter_index);
-        // FOR DEBUGGING ONLY, PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
+        // FOR DEBUGGING ONLY; PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
 //         Serial.println(gripper_int);
 //         Serial.println(elevator_int);
 
@@ -349,11 +269,10 @@ void decoder()
         
       } else if(data_array[0] == 'L') {
         ////////////////////
-        // PARSING
-        // this parses a LED command
+        // PARSING LED COMMAND
         
         data_array[end_of_message_index] = '\0';
-        // FOR DEBUGGING ONLY, PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
+        // FOR DEBUGGING ONLY; PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
 //        Serial.println("data array:");
 //        Serial.println(data_array);
         char* nav_field = data_array;
@@ -362,16 +281,16 @@ void decoder()
 
         ///////////////////
         // HAVING PARSED, THE FOLLOWING IS FUNCTIONALITY
-        if (navigation_state != 1) {
+        if (navigation_state != -1) {
           led_mode = static_cast<led_mode_states>(navigation_state);
         }
-        // FOR DEBUGGING ONLY, PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
+        // FOR DEBUGGING ONLY; PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
 //        Serial.println("navigation state:");
 //        Serial.println(navigation_state);
         
       } else {
         // you done messed up A-Aron, we erase the buffer
-        // FOR DEBUGGING ONLY, PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
+        // FOR DEBUGGING ONLY; PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
         // println("invalid command detected");
         stored_data_index = 0;
       } 
@@ -392,14 +311,5 @@ void loop()
 //  node_handle.spinOnce();
 //  delay(1);
 }
-
-
-
-
-
-
-
-
-
 
 #endif 
