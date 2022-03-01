@@ -42,7 +42,7 @@ bool engage = false;
 //ros::Subscriber<rover_msgs::bat_stat_grip_elev_arduino> control_subscriber("stat_grip_elev_arduino_cmd", &control_Callback);
 // Define the array of leds
 CRGB leds[STATUS_INDICATOR_NUM_LEDS];
-enum led_mode_states {AUTONOMOUS, ARRIVAL, TELEOPERATION, IDLE};
+enum led_mode_states {AUTONOMOUS, TELEOPERATION, ARRIVAL, IDLE};
 led_mode_states led_mode;
 
 
@@ -220,24 +220,28 @@ void setup()
 
 void statusIndicatorTick()
     {
-        if (led_mode == AUTONOMOUS)
+        if (led_mode == AUTONOMOUS) {
             setArrayColor(255,0,0);
+        }
         else if (led_mode == ARRIVAL)
         {
-            if (statCounter == STATUS_INDICATOR_COUNTER_MAX/2)
+            if (statCounter == STATUS_INDICATOR_COUNTER_MAX/2) {
                 // Need to flash if in arrival state
                 setArrayColor(0,255,0);
+            }
             else if (statCounter == STATUS_INDICATOR_COUNTER_MAX){
                 setArrayColor(0,0,0);
                 statCounter = 0;
             }
             statCounter++;
         }
-        else if (led_mode == TELEOPERATION)
+        else if (led_mode == TELEOPERATION) {
             setArrayColor(0,0,255);
-        else
+        }
+        else {
             setArrayColor(0,0,0);
-    }
+        }
+   }
 
 void batteryTick()
   {
@@ -398,7 +402,7 @@ void decoder()
 
         ///////////////////
         // HAVING PARSED, THE FOLLOWING IS FUNCTIONALITY
-        if (navigation_state != 1) {
+        if (navigation_state != -1) {
           led_mode = static_cast<led_mode_states>(navigation_state);
         }
         // FOR DEBUGGING ONLY, PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
