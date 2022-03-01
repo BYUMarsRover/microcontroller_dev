@@ -231,7 +231,7 @@ void statusIndicatorTick()
             }
             else if (statCounter == STATUS_INDICATOR_COUNTER_MAX){
                 setArrayColor(0,0,0);
-                statCounter = 0;
+                //statCounter = 0;
             }
             statCounter++;
         }
