@@ -16,8 +16,9 @@ TicI2C tic;
 #define INB 4  // D4
 #define PWM 5   // D5
 
-// Solenoid
+// Keyboard Clicker
 #define LASR 6 // D6
+#define CLIKR 9 // D9
 
 // Battery
 #define BATTERY_MONITOR_INPUT_PIN A0 //A0
@@ -30,19 +31,19 @@ TicI2C tic;
 #define STATUS_INDICATOR_NUM_LEDS   32
 #define STATUS_INDICATOR_BRIGHTNESS  25
 #define STATUS_INDICATOR_PREAMBLE  0x1
-#define STATUS_INDICATOR_COUNTER_MAX 250
+#define STATUS_INDICATOR_COUNTER_MAX 80000
 
 //void control_Callback(const rover_msgs::bat_stat_grip_elev_arduino& control_msg);
 
 int battCounter = 0;
-int statCounter = 0;
+long statCounter = 0;
 bool engage = false;
 //ros::NodeHandle_<ArduinoHardware, 2, 1, 160, 210> node_handle;
 //rover_msgs::bat_stat_grip_elev_arduino control_msg;
 //ros::Subscriber<rover_msgs::bat_stat_grip_elev_arduino> control_subscriber("stat_grip_elev_arduino_cmd", &control_Callback);
 // Define the array of leds
 CRGB leds[STATUS_INDICATOR_NUM_LEDS];
-enum led_mode_states {AUTONOMOUS, TELEOPERATION, ARRIVAL, IDLE};
+enum led_mode_states {AUTONOMOUS, ARRIVAL, TELEOPERATION, IDLE};
 led_mode_states led_mode;
 
 
@@ -181,9 +182,9 @@ void setup()
   //                          255: 100% Duty Cycle
   pinMode(PWM, OUTPUT);
 
-  // LASER DIODE AND SOLENOID ENABLE PIN
+  // LASER DIODE AND SOLENOID ENABLE PINS
   pinMode(LASR, OUTPUT);
-
+  pinMode(CLIKR, OUTPUT);
   // !! Set pin states !!
   
   // Sets ENABLE to enable driver outputs
@@ -201,6 +202,7 @@ void setup()
 
   // Laser Default State
   digitalWrite(LASR, LOW);
+  digitalWrite(CLIKR, LOW);
 
 
   // Inidicator LED setup //
@@ -220,28 +222,24 @@ void setup()
 
 void statusIndicatorTick()
     {
-        if (led_mode == AUTONOMOUS) {
+        if (led_mode == AUTONOMOUS)
             setArrayColor(255,0,0);
-        }
         else if (led_mode == ARRIVAL)
         {
-            if (statCounter == STATUS_INDICATOR_COUNTER_MAX/2) {
+            if (statCounter == STATUS_INDICATOR_COUNTER_MAX/2)
                 // Need to flash if in arrival state
                 setArrayColor(0,255,0);
-            }
             else if (statCounter == STATUS_INDICATOR_COUNTER_MAX){
                 setArrayColor(0,0,0);
-                //statCounter = 0;
+                statCounter = 0;
             }
             statCounter++;
         }
-        else if (led_mode == TELEOPERATION) {
+        else if (led_mode == TELEOPERATION)
             setArrayColor(0,0,255);
-        }
-        else {
+        else
             setArrayColor(0,0,0);
-        }
-   }
+    }
 
 void batteryTick()
   {
@@ -254,7 +252,7 @@ void batteryTick()
       // You can't write to serial correctly without flushing the buffer
       Serial.flush();
 
-      //Serial.println(reading);
+      Serial.println(reading);
       Serial.flush();
   }
   
@@ -289,7 +287,7 @@ void decoder()
       
       
       if (read_char == ';') {
-        Serial.println("Message complete, setting has_message to true"); 
+        // Serial.println("Message complete, setting has_message to true"); 
         has_message = true;
         // we keep track of the end of message,
         end_of_message_index = stored_data_index - 1;
@@ -312,7 +310,7 @@ void decoder()
       
       //Serial.println(data_array[0]);
       if(data_array[0] == 'G') {
-        Serial.println("Detected message is of type G");
+        // Serial.println("Detected message is of type G");
         // this parses the gripper_elev commands
         // first, we find the index of the colon delimiter
         char *delimiter_index = data_array;
@@ -332,13 +330,13 @@ void decoder()
         
         data_array[end_of_message_index] = '\0';
         char *gripper = command_index;
-        Serial.println(command_index);
+        // Serial.println(command_index);
         //now gripper will point to the start of the integer field (ignoring the 'G' character)
         //gripper++;
         int gripper_int = atoi(gripper);
         int elevator_int = atoi(delimiter_index);
         // FOR DEBUGGING ONLY, PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
-         Serial.println(gripper_int);
+         // Serial.println(gripper_int);
          //Serial.println(elevator_int);
 
         ///////////////////
@@ -346,23 +344,20 @@ void decoder()
         if (gripper_int == 0) {
           analogWrite(PWM, 0);
         } else if (gripper_int > 0) {
-          //Serial.println("Gripper Close command recieved");
           //Serial.println(gripper_int);
-          digitalWrite(INA, HIGH); // D3 enable
+          digitalWrite(INA, HIGH); // D3 
           digitalWrite(INB, LOW);  // D4
           analogWrite(PWM, abs(gripper_int));
         } else if (gripper_int < 0) {
-          //Serial.println("Gripper Open command received");
           // Reversed LOW/HIGH is brokey
-          digitalWrite(INA, LOW); // enable
-          digitalWrite(INB, HIGH); // direction
+          digitalWrite(INA, LOW); // 
+          digitalWrite(INB, HIGH); // 
 //          digitalWrite(INA, HIGH);
 //          digitalWrite(INB, LOW);
           //Serial.println(gripper_int);
           //analogWrite(PWM, gripper_int);
         analogWrite(PWM, -255 - gripper_int);
         }
-        //Serial.println("got herer");
         if (engage == true) {
       
           if (elevator_int == 12) {
@@ -385,9 +380,9 @@ void decoder()
           tic.energize();
         }
 
-       //Serial.println("got here 2");
 
       } else if(data_array[0] == 'L') {
+        // Serial.println("Detected message is of type L");
         ////////////////////
         // PARSING
         // this parses a LED command
@@ -397,19 +392,20 @@ void decoder()
 //        Serial.println("data array:");
 //        Serial.println(data_array);
         char* nav_field = data_array;
-        nav_field++;
+        nav_field += end_of_message_index - 1;
         int navigation_state = atoi(nav_field);
-
+//        Serial.println(navigation_state);
         ///////////////////
         // HAVING PARSED, THE FOLLOWING IS FUNCTIONALITY
-        if (navigation_state != -1) {
-          led_mode = static_cast<led_mode_states>(navigation_state);
-        }
+//        if (navigation_state != 1) {
+        led_mode = static_cast<led_mode_states>(navigation_state);
+//        }
         // FOR DEBUGGING ONLY, PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
 //        Serial.println("navigation state:");
 //        Serial.println(navigation_state);
-        
+         
       } else if(data_array[0] == 'S'){
+        // Serial.println("Detected message is of type S");
           // PARSING
           // this parses a Solenoid command
           data_array[end_of_message_index] = '\0';
@@ -419,6 +415,12 @@ void decoder()
           if(data_array[1] == '-'){
             digitalWrite(LASR,LOW);
           }
+          if(data_array[1] == '!'){
+            digitalWrite(CLIKR,HIGH);
+            delay(110); // good for one key click
+            digitalWrite(CLIKR,LOW);
+          }
+          
       } else {
         // you done messed up A-Aron, we erase the buffer
         // FOR DEBUGGING ONLY, PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
@@ -428,7 +430,15 @@ void decoder()
       //Serial.println("Command procedures passed, resetting buffer");
       // we have parsed our message, now we need to reset the buffer
       stored_data_index = 0;
+      while(Serial.available()){
+        Serial.read();
+      }
+      // // Serial.print("This is what is left: ");
+      // Serial.println(data_array);
+      // Serial.print("left in the serial:");
+      // Serial.println(Serial.read());
       Serial.flush();
+      
     }
   }
 }
@@ -444,14 +454,5 @@ void loop()
 //  node_handle.spinOnce();
 //  delay(1);
 }
-
-
-
-
-
-
-
-
-
 
 #endif 
