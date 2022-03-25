@@ -356,7 +356,7 @@ void decoder()
 //          digitalWrite(INB, LOW);
           //Serial.println(gripper_int);
           //analogWrite(PWM, gripper_int);
-        analogWrite(PWM, -255 - gripper_int);
+        analogWrite(PWM, -254 - gripper_int);
         }
         if (engage == true) {
       
