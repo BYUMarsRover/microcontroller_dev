@@ -6,9 +6,13 @@
 #include <Tic.h>
 #define FASTLED_INTERNAL
 #include <FastLED.h>
+#include <ezButton.h>
+#define TOP_LIMIT_SWITCH A2
 
 
 TicI2C tic;
+ezButton limitSwitch(A2);  // create ezButton object that attach to pin A2;
+
 
 // Elevator and Gripper
 #define FLT 2  // D2  fault
@@ -38,6 +42,7 @@ TicI2C tic;
 int battCounter = 0;
 long statCounter = 0;
 bool engage = false;
+bool hit_top_elevator = false;
 //ros::NodeHandle_<ArduinoHardware, 2, 1, 160, 210> node_handle;
 //rover_msgs::bat_stat_grip_elev_arduino control_msg;
 //ros::Subscriber<rover_msgs::bat_stat_grip_elev_arduino> control_subscriber("stat_grip_elev_arduino_cmd", &control_Callback);
@@ -155,6 +160,7 @@ void setup()
 {
   // Arduino_rover_status setup
   Serial.begin(9600);
+  limitSwitch.setDebounceTime(50); 
 
   // indicator = StatusIndicator();
   // indicator.setup();
@@ -358,16 +364,25 @@ void decoder()
           //analogWrite(PWM, gripper_int);
         analogWrite(PWM, -254 - gripper_int);
         }
+        
+//        Serial.println(hit_top_elevator);
+        
         if (engage == true) {
-      
           if (elevator_int == 12) {
             
             tic.deenergize();
             engage = false;
           } else {
-            
-            tic.setTargetVelocity(elevator_int * 2000000);
+            if (!hit_top_elevator) { // if it has not hit the top
+              tic.setTargetVelocity(elevator_int * 2000000); // keep going up
+            } else {
+              if (elevator_int > 0) { // if it is commanded to go down
+                tic.setTargetVelocity(elevator_int * 2000000); // set the velocity 
+                delay(1000); //and let it go until it releases the button
+              }
+            }
           }
+          
         } else if ((engage == false) && (elevator_int != 1)) {
       
           engage = true;
@@ -443,8 +458,37 @@ void decoder()
   }
 }
 
+
+void limitswitch(){
+   // Limit switch
+  limitSwitch.loop(); // MUST call the loop() function first
+  if(limitSwitch.isPressed()) {
+      Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
+      hit_top_elevator = true;
+      tic.setTargetVelocity(0);
+  }
+
+  if(limitSwitch.isReleased()) {
+      Serial.println("The limit switch: TOUCHED -> UNTOUCHED");
+      hit_top_elevator = false;
+      
+  }
+
+  int state = limitSwitch.getState();
+  if(state == HIGH) {
+      Serial.println("The limit switch: UNTOUCHED");
+      hit_top_elevator = false;
+  }
+  else{
+        Serial.println("The limit switch: TOUCHED");
+        hit_top_elevator = true;
+        tic.setTargetVelocity(0);
+    }
+}
+
 void loop()
 {
+  limitswitch();
   // Indicator LED
   decoder();
   statusIndicatorTick();
