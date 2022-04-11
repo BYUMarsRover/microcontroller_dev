@@ -463,24 +463,24 @@ void limitswitch(){
    // Limit switch
   limitSwitch.loop(); // MUST call the loop() function first
   if(limitSwitch.isPressed()) {
-      Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
+//      Serial.println("The limit switch: UNTOUCHED -> TOUCHED");
       hit_top_elevator = true;
       tic.setTargetVelocity(0);
   }
 
   if(limitSwitch.isReleased()) {
-      Serial.println("The limit switch: TOUCHED -> UNTOUCHED");
+//      Serial.println("The limit switch: TOUCHED -> UNTOUCHED");
       hit_top_elevator = false;
       
   }
 
   int state = limitSwitch.getState();
   if(state == HIGH) {
-      Serial.println("The limit switch: UNTOUCHED");
+//      Serial.println("The limit switch: UNTOUCHED");
       hit_top_elevator = false;
   }
   else{
-        Serial.println("The limit switch: TOUCHED");
+//        Serial.println("The limit switch: TOUCHED");
         hit_top_elevator = true;
         tic.setTargetVelocity(0);
     }
@@ -488,7 +488,7 @@ void limitswitch(){
 
 void loop()
 {
-//  limitswitch();
+  limitswitch();
   // Indicator LED
   decoder();
   statusIndicatorTick();
