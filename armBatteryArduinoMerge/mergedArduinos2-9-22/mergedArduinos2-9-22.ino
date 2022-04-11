@@ -48,7 +48,7 @@ bool hit_top_elevator = false;
 //ros::Subscriber<rover_msgs::bat_stat_grip_elev_arduino> control_subscriber("stat_grip_elev_arduino_cmd", &control_Callback);
 // Define the array of leds
 CRGB leds[STATUS_INDICATOR_NUM_LEDS];
-enum led_mode_states {AUTONOMOUS, ARRIVAL, TELEOPERATION, IDLE};
+enum led_mode_states {AUTONOMOUS, TELEOPERATION, ARRIVAL, IDLE};
 led_mode_states led_mode;
 
 
@@ -488,7 +488,7 @@ void limitswitch(){
 
 void loop()
 {
-  limitswitch();
+//  limitswitch();
   // Indicator LED
   decoder();
   statusIndicatorTick();
