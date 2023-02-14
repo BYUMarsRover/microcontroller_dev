@@ -1,3 +1,5 @@
+//changes that need to be made in this code to implement the elevator. This is the code that sets the pins correspoonding with each of the wheels. 
+
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
@@ -6,8 +8,18 @@
 const int I2C_ADDRESS = 10;
 const int ESCON_RPM_RANGE_MIN = -6000;
 const int ESCON_RPM_RANGE_MAX = 6000;
-const int NUM_WHEELS = 6;
+//CHANGE THE NUMBER OF WHEELS BEING USED TO SEVEN FOR USE IN THE OTHER FUNCTIONS
+const int NUM_WHEELS = 7;
 
+
+
+//ADDED SECTION ASSIGING PINS FOR THE ELEVATOR MOTOR/////////
+const int ELEVATOR_SET_SPEED = 9;
+const int ELEVATOR_ENABLE = 30;
+const int ELEVATOR_DIR = 31;
+const int ELEVATOR_ERROR = 32;  //This is what is called ready on the pcb. not sure which one it is actually doing
+const int ELEVATOR_ACTUAL_SPEED = A5;   //
+//END ADDED SECTION 
 const int LEFT_FRONT_WHEEL_SET_SPEED = 45;
 const int LEFT_FRONT_WHEEL_ENABLE = 49;
 const int LEFT_FRONT_WHEEL_DIR = 53;

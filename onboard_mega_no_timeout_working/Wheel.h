@@ -1,3 +1,4 @@
+//all changes to this file for the elevtor are marked by comments.
 #ifndef WHEEL_H
 #define WHEEL_H
 
@@ -20,7 +21,7 @@ public:
 
     this->is_right_side_wheel = true;
   }
-  
+ //MIGHT NEED TO CHANGE THIS SO IT INCLUDES OTHER ENTRIES 
   void init(uint8_t set_speed_pin, uint8_t enable_pin, uint8_t dir_pin, uint8_t actual_speed_pin, uint8_t error_pin, bool is_right_side_wheel){
     this->set_speed_pin = set_speed_pin;
     this->enable_pin = enable_pin;
@@ -55,13 +56,14 @@ public:
     // this equation is the equation of a line on a graph representing the output range on the y axis and the input range on th x axis. y = mx + b
     return ((((ESCON_RPM_RANGE_MAX - ESCON_RPM_RANGE_MIN) / 818.4) * rawSpeed) + ESCON_RPM_RANGE_MAX); 
   }
-
+///HAVEN'T CHANGED THIS, BUT WE MAY NEED TO CHANGE THE WAY WE ARE SENDING DATA IN FOR THE SAKE OF CONSISTENCY
   void writeParams() {
     /*
     * The Escon Drive Controllers require a minuimum-maximum range for the duty cycle (pwm) of 10% - 90%. So the desired speed is mapped from
     *  a range of [0,255] to [255*.1,255*.9].
     */
     analogWrite(set_speed_pin, map(set_speed,0,255,(255 * .1),(255 * .9)));
+    //WILL NEED TO READJUST THIS
     digitalWrite(dir_pin, is_right_side_wheel == dir);
   }
 

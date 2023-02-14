@@ -39,7 +39,7 @@ void setup() {
 
 void loop() {
     // There are bytes available to be read
-    if (Serial.available() >= 12) {
+    if (Serial.available() >= 14) {     //CHANGED NUMBER OF BYTES TO LOOK FOR FROM 12 TO 14 TO INCORPORATE THE EXTRA TWO NEEDED FOR THE ELEVATOR.//////
         
         read_bytes(); // Read the incoming bytes and store them in the wheels data members
 
@@ -158,5 +158,12 @@ void set_pin_modes() {
     pinMode(LEFT_REAR_WHEEL_SET_SPEED, OUTPUT);
     pinMode(LEFT_REAR_WHEEL_DIR, OUTPUT);
     pinMode(LEFT_REAR_WHEEL_ENABLE, OUTPUT);
-    pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);  
+    pinMode(LEFT_REAR_WHEEL_ERROR, INPUT_PULLUP);
+//ADDED THIS TO INCLUDE THE PINS NEEDED FOR THE ARDUINO TO INITIALIZE
+    pinMode(29, INPUT);    //sets input because we have the wrong PWM pin
+    pinMode(ELEVATOR_SET_SPEED, OUTPUT);
+    pinMode(ELEVATOR_DIR, OUTPUT);
+    pinMode(ELEVATOR_ENABLE, OUTPUT);
+    pinMode(ELEVATOR_ERROR, INPUT_PULLUP);   
+//END ADDITIONS SECTION
 }
