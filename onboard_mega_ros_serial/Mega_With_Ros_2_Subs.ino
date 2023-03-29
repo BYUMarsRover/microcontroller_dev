@@ -45,7 +45,7 @@ unsigned long oldCommandTime = 0;
 //Constant variable that sets the maximum delay between motor commands
 //If this value is exceeded, it implies that communication has been lost between
 //the Xavier and the Mega and the Mega will shut down all motion in the wheels
-const int TIMEDIFF = 2000000;
+const int TIMEDIFF = 3000;
 
 //Constant variable used to shut down the wheels
 const byte STOP_WHEELS = byte(0);
