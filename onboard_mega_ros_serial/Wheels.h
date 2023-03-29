@@ -16,28 +16,12 @@ public:
     wheelList[3].init(RIGHT_REAR_WHEEL_SET_SPEED,  RIGHT_REAR_WHEEL_ENABLE,  RIGHT_REAR_WHEEL_DIR,  RIGHT_REAR_WHEEL_ACTUAL_SPEED, RIGHT_REAR_WHEEL_ERROR, true);
     wheelList[4].init(RIGHT_MIDDLE_WHEEL_SET_SPEED,RIGHT_MIDDLE_WHEEL_ENABLE,RIGHT_MIDDLE_WHEEL_DIR,RIGHT_MIDDLE_WHEEL_ACTUAL_SPEED, RIGHT_MIDDLE_WHEEL_ERROR, true);
     wheelList[5].init(RIGHT_FRONT_WHEEL_SET_SPEED, RIGHT_FRONT_WHEEL_ENABLE, RIGHT_FRONT_WHEEL_DIR, RIGHT_FRONT_WHEEL_ACTUAL_SPEED, RIGHT_FRONT_WHEEL_ERROR, true);
+    wheelList[6].init(ELEVATOR_SET_SPEED,ELEVATOR_ENABLE,ELEVATOR_DIR,ELEVATOR_ACTUAL_SPEED,ELEVATOR_ERROR,true); 
   }
   
   ~Wheels(){}
 
-  void printVals() {
-    for (int i = 0; i < NUM_WHEELS; i++) {
-      Serial.print(i);
-      Serial.print(". set_speed: ");
-      Serial.println(wheelList[i].set_speed);
-      
-      Serial.print("\tdir: ");
-      Serial.println(wheelList[i].dir);
-    }
-    Serial.println("");
-  }
-
-  void updateFeedbackData() {
-    for (int i = 0; i < NUM_WHEELS; i++) {
-      wheelList[i].updateFeedbackData();
-    }
-  }
-
+// FUNCTION THAT WILL WRITE PARAMS TO EACH WHEEL. 
   void writeParams() {
     for (int i = 0; i < NUM_WHEELS; i++) {
       wheelList[i].writeParams();

@@ -1,12 +1,17 @@
+
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
 #include <Arduino.h>
 
-const int I2C_ADDRESS = 10;
-const int ESCON_RPM_RANGE_MIN = -6000;
-const int ESCON_RPM_RANGE_MAX = 6000;
-const int NUM_WHEELS = 6;
+//number of motors on arduino  
+const int NUM_WHEELS = 7;
+
+const int ELEVATOR_SET_SPEED = 9;
+const int ELEVATOR_ENABLE = 30;
+const int ELEVATOR_DIR = 31;
+const int ELEVATOR_ERROR = 32; 
+const int ELEVATOR_ACTUAL_SPEED = A5; 
 
 const int LEFT_FRONT_WHEEL_SET_SPEED = 45;
 const int LEFT_FRONT_WHEEL_ENABLE = 49;
@@ -44,8 +49,8 @@ const int RIGHT_FRONT_WHEEL_DIR = 6;
 const int RIGHT_FRONT_WHEEL_ERROR = 7;
 const int RIGHT_FRONT_WHEEL_ACTUAL_SPEED = A10;
 
-//const int JETSON_POWER_ON = 44;
-
-const int POWER_INDICATOR = 13;
+//GRIPPER IR PIN DEFINITIONS
+const int GRIP_IR1 = A0;
+const int GRIP_IR2 = A1;
 
 #endif
