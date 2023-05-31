@@ -134,7 +134,7 @@ void statusIndicatorTick()
         }
         else if (led_mode == ARRIVAL)
         {
-            if (statCounter == STATUS_INDICATOR_COUNTER_MAX/2) {
+            if (statCounter == STATUS_INDICATOR_COUNTER_MAX*0.1) {
                 // Need to flash if in arrival state
                 setArrayColor(0,255,0);
             }
