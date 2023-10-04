@@ -1,34 +1,28 @@
-
 #ifndef ARM_ARDUINO_INO
 #define ARM_ARDUINO_INO
 
 //#include <ros.h>
 //#include <rover_msgs/bat_stat_grip_elev_arduino.h>
-#include <Tic.h>
 #define FASTLED_INTERNAL
 #include <FastLED.h>
 
-
-TicI2C tic;
-
 // Elevator and Gripper
-#define FLT 2  // D2  fault
-#define INA 3   // D3
-#define INB 4  // D4
-#define PWM 5   // D5
+#define FLT 2 // D2 (fault)
+#define INA 3 // D3
+#define INB 4 // D4
+#define PWM 5 // D5
 
 // Battery
-#define BATTERY_MONITOR_INPUT_PIN A0 //A0
+#define BATTERY_MONITOR_INPUT_PIN A0  // A0
+#define BATTERY_MONITOR_PREAMBLE  0x2
 //#define BATTERY_MONITOR_BATTERY_ADC_MIN 729
-#define BATTERY_MONITOR_PREAMBLE 0x2
-
 
 // Indicator
-#define STATUS_INDICATOR_LED_PIN 8 // D8
-#define STATUS_INDICATOR_NUM_LEDS   32
-#define STATUS_INDICATOR_BRIGHTNESS  25
-#define STATUS_INDICATOR_PREAMBLE  0x1
-#define STATUS_INDICATOR_COUNTER_MAX 250
+#define STATUS_INDICATOR_LED_PIN      8 // D8
+#define STATUS_INDICATOR_NUM_LEDS     32
+#define STATUS_INDICATOR_BRIGHTNESS   25
+#define STATUS_INDICATOR_PREAMBLE     0x1
+#define STATUS_INDICATOR_COUNTER_MAX  250
 
 int battCounter = 0;
 int statCounter = 0;
@@ -39,46 +33,22 @@ CRGB leds[STATUS_INDICATOR_NUM_LEDS];
 enum led_mode_states {AUTONOMOUS, TELEOPERATION, ARRIVAL, IDLE};
 led_mode_states led_mode;
 
-// Sends a "Reset command timeout" command to the Tic.  We must
-// call this at least once per second, or else a command timeout
-// error will happen.  The Tic's default command timeout period
-// is 1000 ms, but it can be changed or disabled in the Tic
-// Control Center.
-void resetCommandTimeout()
-{
-  tic.resetCommandTimeout();
-}
-
-// Delays for the specified number of milliseconds while
-// resetting the Tic's command timeout so that its movement does
-// not get interrupted by errors.
-void delayWhileResettingCommandTimeout(uint32_t ms)
-{
-  uint32_t start = millis();
-  do
-  {
-    resetCommandTimeout();
-  } while ((uint32_t)(millis() - start) <= ms);
-}
-
 void setArrayColor(char red, char green, char blue)
-    {
-        for (int x=0;x<STATUS_INDICATOR_NUM_LEDS;x++)
-        {
-            leds[x] = CRGB(red,green,blue);
-        }
-        FastLED.show();
-    }
+{
+  for (int x=0;x<STATUS_INDICATOR_NUM_LEDS;x++)
+  {
+    leds[x] = CRGB(red,green,blue);
+  }
+  FastLED.show();
+}
 
 void setup()
 {
   // Arduino_rover_status setup
   Serial.begin(9600);
 
-  // !! Set pin functionality
 
-  // Gripper and Elevator setup //
-
+  // Gripper pin setup //
   // FAULT - LOW: Overcurrent condition or thermal shutdown
   //         HIGH: Normal Operation
   pinMode(FLT, INPUT);
@@ -95,8 +65,7 @@ void setup()
   //                          255: 100% Duty Cycle
   pinMode(PWM, OUTPUT);
 
-  // !! Set pin states !!
-  
+  // Initialize Gripper pins //
   // Sets ENABLE to enable driver outputs
   digitalWrite(INA, LOW);
 
@@ -106,65 +75,57 @@ void setup()
   // Sets PULSE WIDTH MODULATION to 0% duty cycle
   analogWrite(PWM, 0);
   
-  // Battery Setup //
 
+  // Battery Setup //
   pinMode(BATTERY_MONITOR_INPUT_PIN, INPUT);
 
 
-
   // Inidicator LED setup //
-
   FastLED.addLeds<WS2812B, STATUS_INDICATOR_LED_PIN, GRB>(leds, STATUS_INDICATOR_NUM_LEDS);
-  
   FastLED.setBrightness(STATUS_INDICATOR_BRIGHTNESS);
-  
   setArrayColor(255, 255, 255);    // Flash white for ok signal
-
-//  delay(2000);
-  
   led_mode = IDLE;
+
 
   Serial.flush();
 }
 
 void statusIndicatorTick()
-    {
-        if (led_mode == AUTONOMOUS) {
-            setArrayColor(255,0,0);
-        }
-        else if (led_mode == ARRIVAL)
-        {
-            if (statCounter == STATUS_INDICATOR_COUNTER_MAX*0.1) {
-                // Need to flash if in arrival state
-                setArrayColor(0,255,0);
-            }
-            else if (statCounter == STATUS_INDICATOR_COUNTER_MAX){
-                setArrayColor(0,0,0);
-            }
-            statCounter++;
-        }
-        else if (led_mode == TELEOPERATION) {
-            setArrayColor(0,0,255);
-        }
-        else {
-            setArrayColor(0,0,0);
-        }
+{
+  if (led_mode == AUTONOMOUS) {
+    setArrayColor(255,0,0);
+  }
+  else if (led_mode == ARRIVAL)
+  {
+    if (statCounter == STATUS_INDICATOR_COUNTER_MAX*0.1) {
+      // Need to flash if in arrival state
+      setArrayColor(0,255,0);
     }
+    else if (statCounter == STATUS_INDICATOR_COUNTER_MAX){
+      setArrayColor(0,0,0);
+    }
+    statCounter++;
+  }
+  else if (led_mode == TELEOPERATION) {
+    setArrayColor(0,0,255);
+  }
+  else {
+    setArrayColor(0,0,0);
+  }
+}
 
 void batteryTick()
-  {
-      if (battCounter++ < 1000)
-            return;
-      battCounter = 0;
-      int reading = analogRead(BATTERY_MONITOR_INPUT_PIN);
-//      String asciiReading = String(reading);
+{
+  if (battCounter++ < 1000) return;
+  battCounter = 0;
+  int reading = analogRead(BATTERY_MONITOR_INPUT_PIN);
 
-      // You can't write to serial correctly without flushing the buffer
-      Serial.flush();
+  // You can't write to serial correctly without flushing the buffer
+  Serial.flush();
 
-      Serial.println(reading);
-      Serial.flush();
-  }
+  Serial.println(reading);
+  Serial.flush();
+}
   
 char data_array[128];
 int stored_data_index = 0;
@@ -243,30 +204,6 @@ void decoder()
           digitalWrite(INB, HIGH);
           analogWrite(PWM, -255 - gripper_int);
         }
-        
-        if (engage == true) {
-      
-          if (elevator_int == 12) {
-            
-            tic.deenergize();
-            engage = false;
-          } else {
-            
-            tic.setTargetVelocity(elevator_int * 2000000);
-          }
-        } else if ((engage == false) && (elevator_int != 1)) {
-      
-          engage = true;
-          // Set up I2C.
-          Wire.begin();
-          // Give the Tic some time to start up.
-          delay(20);
-          tic.exitSafeStart();
-          tic.setTargetVelocity(0);
-          tic.energize();
-        }
-
-        
       } else if(data_array[0] == 'L') {
         ////////////////////
         // PARSING LED COMMAND
@@ -287,7 +224,6 @@ void decoder()
         // FOR DEBUGGING ONLY; PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
 //        Serial.println("navigation state:");
 //        Serial.println(navigation_state);
-        
       } else {
         // you done messed up A-Aron, we erase the buffer
         // FOR DEBUGGING ONLY; PRINT STATEMENTS ARE INTERPRETED AS BATTERY VOLTAGE READINGS
@@ -302,14 +238,12 @@ void decoder()
 
 void loop()
 {
-  // Indicator LED
+  // Serial messages
   decoder();
+  // Indicator LED
   statusIndicatorTick();
   // Battery 
   batteryTick();
-  // Arm and Elevator
-//  node_handle.spinOnce();
-//  delay(1);
 }
 
 #endif 
